@@ -7,6 +7,7 @@ defmodule Zendex.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     preferred_cli_env: [espec: :test],
      deps: deps()]
   end
 
@@ -31,6 +32,7 @@ defmodule Zendex.Mixfile do
     [
       {:timex, "~> 3.0"},
       {:httpotion, "~> 3.0.2"},
+      {:espec, "~> 1.3.4", only: :test},
       {:poison, "~> 3.0"}
     ]
   end
