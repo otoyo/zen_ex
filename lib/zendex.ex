@@ -1,18 +1,12 @@
 defmodule Zendex do
+
   @moduledoc """
-  Documentation for Zendex.
+  Ex.
+  - Listing tickets
+    `Zendex.Model.Ticket.list`
+  - Create a ticket
+    `Zendex.Model.Ticket.create(ticket)`
+
+  See also Model and Entity.
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Zendex.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
 end
