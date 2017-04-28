@@ -59,7 +59,7 @@ See also under Zendex.Model.
   - `list`
   - `show`
   - `create`
-  - `udate`
+  - `update`
   - `create_or_update`
   - `destroy`
   - `create_many`
@@ -70,7 +70,7 @@ See also under Zendex.Model.
   - `list`
   - `show`
   - `create`
-  - `udate`
+  - `update`
   - `destroy`
   - `create_many`
   - `update_many`
