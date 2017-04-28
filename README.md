@@ -18,6 +18,17 @@ Update your dependencies:
 % mix deps.get
 ```
 
+Add your Zendesk settings to your config:
+
+```elixir
+config :zendex,
+  subdomain: "your-zendesk-subdomain",
+  user: "otoyo@otoyo.com",
+  api_token: "xxxx"
+```
+
+See also: [Generating a new API token](https://support.zendesk.com/hc/en-us/articles/226022787)
+
 ## Usage
 
 ```elixir
