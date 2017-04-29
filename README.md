@@ -75,6 +75,10 @@ See also under Zendex.Model.
   - `create_many`
   - `update_many`
   - `destroy_many`
+- `JobStatus`
+  - `list`
+  - `show`
+  - `show_many`
 
 ## Contributing
 
