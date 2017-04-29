@@ -1,4 +1,4 @@
-# Zendex
+# Zendex [![Build Status](https://travis-ci.org/otoyo/zendex.svg?branch=master)](https://travis-ci.org/otoyo/zendex)
 
 [Zendesk REST API](https://developer.zendesk.com/rest_api) client for Elixir
 
