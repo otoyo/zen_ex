@@ -2,7 +2,7 @@ defmodule Zendex.Model.UserSpec do
   use ESpec
 
   alias Zendex.Core.Client
-  alias Zendex.Entity.User
+  alias Zendex.Entity.{User,JobStatus}
   alias Zendex.Model
 
   let :json_users do
@@ -15,8 +15,16 @@ defmodule Zendex.Model.UserSpec do
   let :json_user, do: ~s({"user":{"id":223443,"name":"Johnny Agent"}})
   let :user, do: struct(User, %{id: 223443, name: "Johnny Agent"})
 
+  let :json_job_status do
+    ~s({"job_status":{"id":"8b726e606741012ffc2d782bcb7848fe","status":"completed"}})
+  end
+  let :job_status do
+    struct(JobStatus, %{id: "8b726e606741012ffc2d782bcb7848fe", status: "completed"})
+  end
+
   let :response_user, do: %HTTPotion.Response{body: json_user()}
   let :response_users, do: %HTTPotion.Response{body: json_users()}
+  let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
 
   describe "list" do
     before do: allow Client |> to(accept :get, fn(_) -> response_users() end)
@@ -49,48 +57,32 @@ defmodule Zendex.Model.UserSpec do
   end
 
   describe "create_many" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> nil end)
-
-    it "calls Client.post" do
-      Model.User.create_many(users())
-      expect Client |> to(accepted :post)
-    end
+    before do: allow Client |> to(accept :post, fn(_, _) -> response_job_status() end)
+    it do: expect Model.User.create_many(users()) |> to(be_struct JobStatus)
   end
 
   describe "update_many" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> nil end)
-
-    it "calls Client.put" do
-      Model.User.update_many(users())
-      expect Client |> to(accepted :put)
-    end
+    before do: allow Client |> to(accept :put, fn(_, _) -> response_job_status() end)
+    it do: expect Model.User.update_many(users()) |> to(be_struct JobStatus)
   end
 
   describe "create_or_update_many" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> nil end)
-
-    it "calls Client.post" do
-      Model.User.create_or_update_many(users())
-      expect Client |> to(accepted :post)
-    end
+    before do: allow Client |> to(accept :post, fn(_, _) -> response_job_status() end)
+    it do: expect Model.User.create_or_update_many(users()) |> to(be_struct JobStatus)
   end
 
   describe "destroy_many" do
-    before do: allow Client |> to(accept :delete)
-
-    it "calls Client.delete" do
-      Model.User.destroy_many(Enum.map(users(), &(&1.id)))
-      expect Client |> to(accepted :delete)
-    end
+    before do: allow Client |> to(accept :delete, fn(_) -> response_job_status() end)
+    it do: expect Model.User.destroy_many(Enum.map(users(), &(&1.id))) |> to(be_struct JobStatus)
   end
 
-  describe "response_to_users" do
-    subject do: Model.User.response_to_users response_users()
+  describe "create_users" do
+    subject do: Model.User.create_users response_users()
     it do: is_expected() |> to(eq users())
   end
 
-  describe "response_to_user" do
-    subject do: Model.User.response_to_user response_user()
+  describe "create_user" do
+    subject do: Model.User.create_user response_user()
     it do: is_expected() |> to(eq user())
   end
 end
