@@ -30,38 +30,22 @@ defmodule Zendex.Model.UserSpec do
 
   describe "create" do
     before do: allow Client |> to(accept :post, fn(_, _) -> response_user() end)
-
-    it "calls Client.post" do
-      Model.User.create(user())
-      expect Client |> to(accepted :post)
-    end
+    it do: expect Model.User.create(user()) |> to(be_struct User)
   end
 
   describe "update" do
     before do: allow Client |> to(accept :put, fn(_, _) -> response_user() end)
-
-    it "calls Client.put" do
-      Model.User.update(user())
-      expect Client |> to(accepted :put)
-    end
+    it do: expect Model.User.update(user()) |> to(be_struct User)
   end
 
   describe "create_or_update" do
     before do: allow Client |> to(accept :post, fn(_, _) -> response_user() end)
-
-    it "calls Client.post" do
-      Model.User.create_or_update(user())
-      expect Client |> to(accepted :post)
-    end
+    it do: expect Model.User.create_or_update(user()) |> to(be_struct User)
   end
 
   describe "destroy" do
     before do: allow Client |> to(accept :delete, fn(_) -> response_user() end)
-
-    it "calls Client.delete" do
-      Model.User.destroy(user().id)
-      expect Client |> to(accepted :delete)
-    end
+    it do: expect Model.User.destroy(user().id) |> to(be_struct User)
   end
 
   describe "create_many" do
