@@ -31,29 +31,17 @@ defmodule Zendex.Model.TicketSpec do
 
   describe "create" do
     before do: allow Client |> to(accept :post, fn(_, _) -> response_ticket() end)
-
-    it "calls Client.post" do
-      Model.Ticket.create(ticket())
-      expect Client |> to(accepted :post)
-    end
+    it do: expect Model.Ticket.create(ticket()) |> to(be_struct Ticket)
   end
 
   describe "update" do
     before do: allow Client |> to(accept :put, fn(_, _) -> response_ticket() end)
-
-    it "calls Client.put" do
-      Model.Ticket.update(ticket())
-      expect Client |> to(accepted :put)
-    end
+    it do: expect Model.Ticket.update(ticket()) |> to(be_struct Ticket)
   end
 
   describe "destroy" do
     before do: allow Client |> to(accept :delete, fn(_) -> response_ticket() end)
-
-    it "calls Client.delete" do
-      Model.Ticket.destroy(ticket().id)
-      expect Client |> to(accepted :delete)
-    end
+    it do: expect Model.Ticket.destroy(ticket().id) |> to(be_struct Ticket)
   end
 
   describe "create_many" do
