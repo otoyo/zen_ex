@@ -47,13 +47,13 @@ defmodule Zendex.Model.JobStatusSpec do
     it do: expect Model.JobStatus.show_many(Enum.map(job_statuses(), &(&1.id))) |> to(eq job_statuses())
   end
 
-  describe "response_to_job_statuses" do
-    subject do: Model.JobStatus.response_to_job_statuses response_job_statuses()
+  describe "create_job_statuses" do
+    subject do: Model.JobStatus.create_job_statuses response_job_statuses()
     it do: is_expected() |> to(eq job_statuses())
   end
 
-  describe "response_to_job_status" do
-    subject do: Model.JobStatus.response_to_job_status response_job_status()
+  describe "create_job_status" do
+    subject do: Model.JobStatus.create_job_status response_job_status()
     it do: is_expected() |> to(eq job_status())
   end
 end
