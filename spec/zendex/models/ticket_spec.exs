@@ -2,7 +2,7 @@ defmodule Zendex.Model.TicketSpec do
   use ESpec
 
   alias Zendex.Core.Client
-  alias Zendex.Entity.Ticket
+  alias Zendex.Entity.{Ticket,JobStatus}
   alias Zendex.Model
 
   let :json_tickets do
@@ -16,8 +16,16 @@ defmodule Zendex.Model.TicketSpec do
   let :json_ticket, do: ~s({"ticket":{"id":35436,"subject":"My printer is on fire!"}})
   let :ticket, do: struct(Ticket, %{id: 35436, subject: "My printer is on fire!"})
 
+  let :json_job_status do
+    ~s({"job_status":{"id":"8b726e606741012ffc2d782bcb7848fe","status":"completed"}})
+  end
+  let :job_status do
+    struct(JobStatus, %{id: "8b726e606741012ffc2d782bcb7848fe", status: "completed"})
+  end
+
   let :response_ticket, do: %HTTPotion.Response{body: json_ticket()}
   let :response_tickets, do: %HTTPotion.Response{body: json_tickets()}
+  let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
 
   describe "list" do
     before do: allow Client |> to(accept :get, fn(_) -> response_tickets() end)
@@ -45,30 +53,18 @@ defmodule Zendex.Model.TicketSpec do
   end
 
   describe "create_many" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> nil end)
-
-    it "calls Client.post" do
-      Model.Ticket.create_many(tickets())
-      expect Client |> to(accepted :post)
-    end
+    before do: allow Client |> to(accept :post, fn(_, _) -> response_job_status() end)
+    it do: expect Model.Ticket.create_many(tickets()) |> to(be_struct JobStatus)
   end
 
   describe "update_many" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> nil end)
-
-    it "calls Client.put" do
-      Model.Ticket.update_many(tickets())
-      expect Client |> to(accepted :put)
-    end
+    before do: allow Client |> to(accept :put, fn(_, _) -> response_job_status() end)
+    it do: expect Model.Ticket.update_many(tickets()) |> to(be_struct JobStatus)
   end
 
   describe "destroy_many" do
-    before do: allow Client |> to(accept :delete)
-
-    it "calls Client.delete" do
-      Model.Ticket.destroy_many(Enum.map(tickets(), &(&1.id)))
-      expect Client |> to(accepted :delete)
-    end
+    before do: allow Client |> to(accept :delete, fn(_) -> response_job_status() end)
+    it do: expect Model.Ticket.destroy_many(Enum.map(tickets(), &(&1.id))) |> to(be_struct JobStatus)
   end
 
   describe "desc_to_comment" do
@@ -82,13 +78,13 @@ defmodule Zendex.Model.TicketSpec do
     end
   end
 
-  describe "response_to_tickets" do
-    subject do: Model.Ticket.response_to_tickets response_tickets()
+  describe "create_tickets" do
+    subject do: Model.Ticket.create_tickets response_tickets()
     it do: is_expected() |> to(eq tickets())
   end
 
-  describe "response_to_ticket" do
-    subject do: Model.Ticket.response_to_ticket response_ticket()
+  describe "create_ticket" do
+    subject do: Model.Ticket.create_ticket response_ticket()
     it do: is_expected() |> to(eq ticket())
   end
 end
