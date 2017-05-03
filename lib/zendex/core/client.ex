@@ -1,5 +1,7 @@
 defmodule Zendex.Core.Client do
 
+  @moduledoc false
+
   @content_type "application/json"
 
   def get(endpoint) do

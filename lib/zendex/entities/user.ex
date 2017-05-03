@@ -5,4 +5,7 @@ defmodule Zendex.Entity.User do
              :signature, :details, :notes, :organization_id, :role, :custom_role_id, :moderator,
              :ticket_restriction, :only_private_comments, :tags, :restricted_agent, :suspended, :user_fields]
 
+  @moduledoc """
+  User entity corresponding to Zendesk User
+  """
 end

@@ -1,12 +1,13 @@
 defmodule Zendex do
 
   @moduledoc """
-  Ex.
-  - Listing tickets
-    `Zendex.Model.Ticket.list`
-  - Create a ticket
-    `Zendex.Model.Ticket.create(ticket)`
+  Zendesk REST API Library
 
-  See also Model and Entity.
+  ## Examples
+
+    iex> Zendex.Model.Ticket.list
+    [%Zendex.Entity.Ticket{id: xxx, title: "xxx", ...}, ...]
+
+  See under Zendex.Model and Zendex.Entity.
   """
 end
