@@ -28,17 +28,17 @@ defmodule Zendex.Model.Ticket do
     Client.delete("/api/v2/tickets/#{id}.json") |> __create_ticket__
   end
 
-  @spec create_many(list(%Ticket{})) :: %HTTPotion.Response{}
+  @spec create_many(list(%Ticket{})) :: %JobStatus{}
   def create_many(tickets) when is_list(tickets) do
     Client.post("/api/v2/tickets/create_many.json", %{tickets: desc_to_comment(tickets)}) |> Model.JobStatus.__create_job_status__
   end
 
-  @spec update_many(list(%Ticket{})) :: %HTTPotion.Response{}
+  @spec update_many(list(%Ticket{})) :: %JobStatus{}
   def update_many(tickets) when is_list(tickets) do
     Client.put("/api/v2/tickets/update_many.json", %{tickets: desc_to_comment(tickets)}) |> Model.JobStatus.__create_job_status__
   end
 
-  @spec destroy_many(list(integer)) :: %HTTPotion.Response{}
+  @spec destroy_many(list(integer)) :: %JobStatus{}
   def destroy_many(ids) when is_list(ids) do
     Client.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus.__create_job_status__
   end
