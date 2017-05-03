@@ -26,6 +26,8 @@ defmodule Zendex.Model.TicketSpec do
   let :response_ticket, do: %HTTPotion.Response{body: json_ticket()}
   let :response_tickets, do: %HTTPotion.Response{body: json_tickets()}
   let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
+  let :response_204, do: %HTTPotion.Response{status_code: 204}
+  let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
     before do: allow Client |> to(accept :get, fn(_) -> response_tickets() end)
@@ -48,8 +50,14 @@ defmodule Zendex.Model.TicketSpec do
   end
 
   describe "destroy" do
-    before do: allow Client |> to(accept :delete, fn(_) -> response_ticket() end)
-    it do: expect Model.Ticket.destroy(ticket().id) |> to(be_struct Ticket)
+    context "response status_code: 204" do
+      before do: allow Client |> to(accept :delete, fn(_) -> response_204() end)
+      it do: expect Model.Ticket.destroy(ticket().id) |> to(eq :ok)
+    end
+    context "response status_code: 404" do
+      before do: allow Client |> to(accept :delete, fn(_) -> response_404() end)
+      it do: expect Model.Ticket.destroy(ticket().id) |> to(eq :error)
+    end
   end
 
   describe "create_many" do

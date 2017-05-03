@@ -68,10 +68,20 @@ defmodule Zendex.Model.Ticket do
 
 
   @doc """
+  Delete ticket specified by id.
+
+  ## Examples
+
+    iex> Zendex.Model.Ticket.destroy(1)
+    :ok
+
   """
-  @spec destroy(integer) :: %Ticket{}
+  @spec destroy(integer) :: :ok | :error
   def destroy(id) when is_integer(id) do
-    Client.delete("/api/v2/tickets/#{id}.json") |> __create_ticket__
+    case Client.delete("/api/v2/tickets/#{id}.json").status_code do
+      204 -> :ok
+      _   -> :error
+    end
   end
 
 
