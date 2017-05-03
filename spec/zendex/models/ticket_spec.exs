@@ -78,13 +78,13 @@ defmodule Zendex.Model.TicketSpec do
     end
   end
 
-  describe "create_tickets" do
-    subject do: Model.Ticket.create_tickets response_tickets()
+  describe "__create_tickets__" do
+    subject do: Model.Ticket.__create_tickets__ response_tickets()
     it do: is_expected() |> to(eq tickets())
   end
 
-  describe "create_ticket" do
-    subject do: Model.Ticket.create_ticket response_ticket()
+  describe "__create_ticket__" do
+    subject do: Model.Ticket.__create_ticket__ response_ticket()
     it do: is_expected() |> to(eq ticket())
   end
 end

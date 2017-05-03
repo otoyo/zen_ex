@@ -76,13 +76,13 @@ defmodule Zendex.Model.UserSpec do
     it do: expect Model.User.destroy_many(Enum.map(users(), &(&1.id))) |> to(be_struct JobStatus)
   end
 
-  describe "create_users" do
-    subject do: Model.User.create_users response_users()
+  describe "__create_users__" do
+    subject do: Model.User.__create_users__ response_users()
     it do: is_expected() |> to(eq users())
   end
 
-  describe "create_user" do
-    subject do: Model.User.create_user response_user()
+  describe "__create_user__" do
+    subject do: Model.User.__create_user__ response_user()
     it do: is_expected() |> to(eq user())
   end
 end
