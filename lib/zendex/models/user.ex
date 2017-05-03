@@ -38,17 +38,17 @@ defmodule Zendex.Model.User do
     Client.post("/api/v2/users/create_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
   end
 
-  @spec update_many(list(%User{})) :: %HTTPotion.Response{}
+  @spec update_many(list(%User{})) :: %JobStatus{}
   def update_many(users) when is_list(users) do
     Client.put("/api/v2/users/update_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
   end
 
-  @spec create_or_update_many(list(%User{})) :: %HTTPotion.Response{}
+  @spec create_or_update_many(list(%User{})) :: %JobStatus{}
   def create_or_update_many(users) when is_list(users) do
     Client.post("/api/v2/users/create_or_update_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
   end
 
-  @spec destroy_many(list(integer)) :: %HTTPotion.Response{}
+  @spec destroy_many(list(integer)) :: %JobStatus{}
   def destroy_many(ids) when is_list(ids) do
     Client.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus.__create_job_status__
   end
