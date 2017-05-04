@@ -55,7 +55,7 @@ See also under Zendex.Model.
 
 ## Supported API
 
-- `User`
+- Users
   - `list`
   - `show`
   - `create`
@@ -66,7 +66,7 @@ See also under Zendex.Model.
   - `update_many`
   - `create_or_update_many`
   - `destroy_many`
-- `Ticket`
+- Tickets
   - `list`
   - `show`
   - `create`
@@ -75,7 +75,23 @@ See also under Zendex.Model.
   - `create_many`
   - `update_many`
   - `destroy_many`
-- `JobStatus`
+- Dynamic contents
+  - `list`
+  - `show`
+  - `create`
+  - `update`
+  - `destroy`
+- Variants of dynamic contents
+  - `list`
+  - `show`
+  - `create`
+  - `create_many`
+  - `update`
+  - `update_many`
+  - `destroy`
+- Locales
+  - `show`
+- Job statuses
   - `list`
   - `show`
   - `show_many`
