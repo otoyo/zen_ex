@@ -43,10 +43,12 @@ defmodule Zendex.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:timex, "~> 3.0"},
-      {:httpotion, "~> 3.0.2"},
+      {:earmark, "~> 1.2.1", only: :dev, runtime: false},
       {:espec, "~> 1.3.4", only: :test},
-      {:poison, "~> 3.0"}
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:httpotion, "~> 3.0.2"},
+      {:poison, "~> 3.0"},
+      {:timex, "~> 3.0"},
     ]
   end
 end
