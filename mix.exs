@@ -1,14 +1,27 @@
 defmodule Zendex.Mixfile do
   use Mix.Project
 
+  @description """
+  Zendesk REST API client for Elixir
+  """
+
   def project do
     [app: :zendex,
      version: "0.1.0",
      elixir: "~> 1.4",
+     name: "Zendex",
+     description: @description,
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      preferred_cli_env: [espec: :test],
      deps: deps()]
+  end
+
+  defp package do
+    [maintainers: ["otoyo"],
+     licenses: ["CC0-1.0"],
+     links: %{"Github" => "https://github.com/otoyo/zendex"}]
   end
 
   # Configuration for the OTP application
