@@ -9,7 +9,6 @@ defmodule Zendex.Mixfile do
     [app: :zendex,
      version: "0.1.0",
      elixir: "~> 1.4",
-     name: "Zendex",
      description: @description,
      package: package(),
      build_embedded: Mix.env == :prod,
