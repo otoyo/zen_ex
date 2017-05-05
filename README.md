@@ -2,6 +2,8 @@
 
 [Zendesk REST API](https://developer.zendesk.com/rest_api) client for Elixir
 
+zen\_ex is composed of Models and Entities. See [Usage](#usage).
+
 ## Installation
 
 Add `zen_ex` to your list of dependencies in `mix.exs`:
