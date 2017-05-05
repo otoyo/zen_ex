@@ -8,7 +8,7 @@ Add `zendex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:zendex, github: "otoyo/zendex"}]
+  [{:zendex, "~> 0.1.0"}]
 end
 ```
 
