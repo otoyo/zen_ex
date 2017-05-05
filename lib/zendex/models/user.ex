@@ -12,8 +12,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.list
-    [%Zendex.Entity.User{id: xxx, name: "xxx", ...}, ...]
+      iex> Zendex.Model.User.list
+      [%Zendex.Entity.User{id: xxx, name: "xxx", ...}, ...]
 
   """
   @spec list :: list(%User{})
@@ -27,8 +27,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.show(1)
-    %Zendex.Entity.User{id: 1, name: "xxx", ...}
+      iex> Zendex.Model.User.show(1)
+      %Zendex.Entity.User{id: 1, name: "xxx", ...}
 
   """
   @spec show(integer) :: %User{}
@@ -42,8 +42,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.create(%Zendex.Entity.User{name: "xxx", email: "xxx@xxx"})
-    %Zendex.Entity.User{name: "xxx", email: "xxx@xxx", ...}
+      iex> Zendex.Model.User.create(%Zendex.Entity.User{name: "xxx", email: "xxx@xxx"})
+      %Zendex.Entity.User{name: "xxx", email: "xxx@xxx", ...}
 
   """
   @spec create(%User{}) :: %User{}
@@ -57,8 +57,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.update(%Zendex.Entity.User{id: 1, name: "xxx"})
-    %Zendex.Entity.User{id: 1, name: "xxx", ...}
+      iex> Zendex.Model.User.update(%Zendex.Entity.User{id: 1, name: "xxx"})
+      %Zendex.Entity.User{id: 1, name: "xxx", ...}
 
   """
   @spec update(%User{}) :: %User{}
@@ -72,8 +72,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.create_or_update(%Zendex.Entity.User{name: "xxx", email: "xxx@xxx"})
-    %Zendex.Entity.User{id: xxx, name: "xxx", email: "xxx@xxx", ...}
+      iex> Zendex.Model.User.create_or_update(%Zendex.Entity.User{name: "xxx", email: "xxx@xxx"})
+      %Zendex.Entity.User{id: xxx, name: "xxx", email: "xxx@xxx", ...}
 
   """
   @spec create_or_update(%User{}) :: %User{}
@@ -87,8 +87,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.destroy(1)
-    %Zendex.Entity.User{id: 1, name: "xxx", active: false, ...}
+      iex> Zendex.Model.User.destroy(1)
+      %Zendex.Entity.User{id: 1, name: "xxx", active: false, ...}
 
   """
   @spec destroy(integer) :: %User{}
@@ -102,8 +102,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.create_many([%Zendex.Entity.User{name: "xxx"}, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.User.create_many([%Zendex.Entity.User{name: "xxx"}, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec create_many(list(%User{})) :: %JobStatus{}
@@ -117,8 +117,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.update_many([%Zendex.Entity.User{id: xxx, name: "xxx"}, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.User.update_many([%Zendex.Entity.User{id: xxx, name: "xxx"}, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec update_many(list(%User{})) :: %JobStatus{}
@@ -132,8 +132,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.create_or_update_many([%Zendex.Entity.User{id: xxx, name: "xxx"}, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.User.create_or_update_many([%Zendex.Entity.User{id: xxx, name: "xxx"}, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec create_or_update_many(list(%User{})) :: %JobStatus{}
@@ -147,8 +147,8 @@ defmodule Zendex.Model.User do
 
   ## Examples
 
-    iex> Zendex.Model.User.destroy_many([xxx, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.User.destroy_many([xxx, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec destroy_many(list(integer)) :: %JobStatus{}

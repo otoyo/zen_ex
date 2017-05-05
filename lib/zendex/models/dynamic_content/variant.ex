@@ -14,8 +14,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.list(xxx)
-    [%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...]
+      iex> Zendex.Model.DynamicContent.Variant.list(xxx)
+      [%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...]
 
   """
   @spec list(integer) :: list(%Variant{})
@@ -29,8 +29,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.show(xxx)
-    %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
+      iex> Zendex.Model.DynamicContent.Variant.show(xxx)
+      %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
   @spec show(integer, integer) :: %Variant{}
@@ -44,8 +44,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.create(%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...})
-    %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
+      iex> Zendex.Model.DynamicContent.Variant.create(%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...})
+      %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
   @spec create(integer, %Variant{}) :: %Variant{}
@@ -59,8 +59,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.create_many([%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.DynamicContent.Variant.create_many([%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec create_many(integer, list(%Variant{})) :: %JobStatus{}
@@ -74,8 +74,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.update(%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...})
-    %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
+      iex> Zendex.Model.DynamicContent.Variant.update(%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...})
+      %Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
   @spec update(integer, %Variant{}) :: %Variant{}
@@ -89,8 +89,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.update_many([%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...])
-    %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> Zendex.Model.DynamicContent.Variant.update_many([%Zendex.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...])
+      %Zendex.Entity.JobStatus{id: "xxx"}
 
   """
   @spec update_many(integer, list(%Variant{})) :: %JobStatus{}
@@ -104,8 +104,8 @@ defmodule Zendex.Model.DynamicContent.Variant do
 
   ## Examples
 
-    iex> Zendex.Model.DynamicContent.Variant.destroy(xxx, xxx)
-    :ok
+      iex> Zendex.Model.DynamicContent.Variant.destroy(xxx, xxx)
+      :ok
 
   """
   @spec destroy(integer, integer) :: :ok | :error

@@ -11,8 +11,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-    iex> Zendex.Model.JobStatus.list
-    [%Zendex.Entity.JobStatus{id: xxx, ...}, ...]
+      iex> Zendex.Model.JobStatus.list
+      [%Zendex.Entity.JobStatus{id: xxx, ...}, ...]
 
   """
   @spec list :: list(%JobStatus{})
@@ -26,8 +26,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-    iex> Zendex.Model.JobStatus.show("xxx")
-    %Zendex.Entity.JobStatus{id: "xxx", ...}
+      iex> Zendex.Model.JobStatus.show("xxx")
+      %Zendex.Entity.JobStatus{id: "xxx", ...}
 
   """
   @spec show(binary) :: %JobStatus{}
@@ -41,8 +41,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-    iex> Zendex.Model.JobStatus.show_many(["xxx", ...])
-    [%Zendex.Entity.JobStatus{id: "xxx", ...}, ...]
+      iex> Zendex.Model.JobStatus.show_many(["xxx", ...])
+      [%Zendex.Entity.JobStatus{id: "xxx", ...}, ...]
 
   """
   @spec show_many(list(binary)) :: list(%JobStatus{})

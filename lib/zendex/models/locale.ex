@@ -11,8 +11,8 @@ defmodule Zendex.Model.Locale do
 
   ## Examples
 
-    iex> Zendex.Model.Locale.show("ja")
-    %Zendex.Entity.Locale{id: 67, locale: "ja", ...}
+      iex> Zendex.Model.Locale.show("ja")
+      %Zendex.Entity.Locale{id: 67, locale: "ja", ...}
 
   """
   @spec show(integer | String.t) :: %Locale{}
