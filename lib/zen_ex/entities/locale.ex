@@ -1,4 +1,4 @@
-defmodule Zendex.Entity.Locale do
+defmodule ZenEx.Entity.Locale do
 
   defstruct [:id, :url, :locale, :name, :created_at, :updated_at]
 

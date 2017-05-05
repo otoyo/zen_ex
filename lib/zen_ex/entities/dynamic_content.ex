@@ -1,4 +1,4 @@
-defmodule Zendex.Entity.DynamicContent do
+defmodule ZenEx.Entity.DynamicContent do
 
   defstruct [:id, :url, :name, :placeholder, :default_locale_id, :outdated, :created_at, :updated_at, :variants]
 

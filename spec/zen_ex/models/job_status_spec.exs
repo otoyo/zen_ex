@@ -1,9 +1,9 @@
-defmodule Zendex.Model.JobStatusSpec do
+defmodule ZenEx.Model.JobStatusSpec do
   use ESpec
 
-  alias Zendex.Core.Client
-  alias Zendex.Entity.JobStatus
-  alias Zendex.Model
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.JobStatus
+  alias ZenEx.Model
 
   let :json_job_statuses do
     ~s({"job_statuses":[{"id":"8b726e606741012ffc2d782bcb7848fe","status":"completed"},{"id":"e7665094164c498781ebe4c8db6d2af5","status":"completed"}]})

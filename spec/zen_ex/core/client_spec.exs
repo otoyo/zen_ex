@@ -1,7 +1,7 @@
-defmodule Zendex.Core.ClientSpec do
+defmodule ZenEx.Core.ClientSpec do
   use ESpec
 
-  alias Zendex.Core.Client
+  alias ZenEx.Core.Client
 
   let :endpoint, do: "/api/v2/users.json"
   let :url, do: Client.build_url endpoint()

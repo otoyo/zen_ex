@@ -1,4 +1,4 @@
-defmodule Zendex.Mixfile do
+defmodule ZenEx.Mixfile do
   use Mix.Project
 
   @description """
@@ -6,7 +6,7 @@ defmodule Zendex.Mixfile do
   """
 
   def project do
-    [app: :zendex,
+    [app: :zen_ex,
      version: "0.1.0",
      elixir: "~> 1.4",
      description: @description,
@@ -20,7 +20,7 @@ defmodule Zendex.Mixfile do
   defp package do
     [maintainers: ["otoyo"],
      licenses: ["CC0-1.0"],
-     links: %{"Github" => "https://github.com/otoyo/zendex"}]
+     links: %{"Github" => "https://github.com/otoyo/zen_ex"}]
   end
 
   # Configuration for the OTP application

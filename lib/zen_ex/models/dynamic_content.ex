@@ -1,7 +1,7 @@
-defmodule Zendex.Model.DynamicContent do
-  alias Zendex.Core.Client
-  alias Zendex.Model
-  alias Zendex.Entity.DynamicContent
+defmodule ZenEx.Model.DynamicContent do
+  alias ZenEx.Core.Client
+  alias ZenEx.Model
+  alias ZenEx.Entity.DynamicContent
 
   @moduledoc """
   Provides functions to operate Zendesk Dynamic content.
@@ -13,8 +13,8 @@ defmodule Zendex.Model.DynamicContent do
 
   ## Examples
 
-      iex> Zendex.Model.DynamicContent.list
-      [%Zendex.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%Zendex.Entity.DynamicContent.Variant{...}, ...], ...}, ...]
+      iex> ZenEx.Model.DynamicContent.list
+      [%ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...}, ...]
 
   """
   @spec list :: list(%DynamicContent{})
@@ -28,8 +28,8 @@ defmodule Zendex.Model.DynamicContent do
 
   ## Examples
 
-      iex> Zendex.Model.DynamicContent.show(xxx)
-      %Zendex.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%Zendex.Entity.DynamicContent.Variant{...}, ...], ...}
+      iex> ZenEx.Model.DynamicContent.show(xxx)
+      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...}
 
   """
   @spec show(integer) :: %DynamicContent{}
@@ -43,8 +43,8 @@ defmodule Zendex.Model.DynamicContent do
 
   ## Examples
 
-      iex> Zendex.Model.DynamicContent.create(%Zendex.Entity.DynamicContent{default_locale_id: xxx, variants: [%Zendex.Entity.DynamicContent.Variant{...}, ...], ...})
-      %Zendex.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
+      iex> ZenEx.Model.DynamicContent.create(%ZenEx.Entity.DynamicContent{default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...})
+      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
 
   """
   @spec create(%DynamicContent{}) :: %DynamicContent{}
@@ -59,8 +59,8 @@ defmodule Zendex.Model.DynamicContent do
 
   ## Examples
 
-      iex> Zendex.Model.DynamicContent.update(%Zendex.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...})
-      %Zendex.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
+      iex> ZenEx.Model.DynamicContent.update(%ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...})
+      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
 
   """
   @spec update(%DynamicContent{}) :: %DynamicContent{}
@@ -74,7 +74,7 @@ defmodule Zendex.Model.DynamicContent do
 
   ## Examples
 
-      iex> Zendex.Model.DynamicContent.destroy(1)
+      iex> ZenEx.Model.DynamicContent.destroy(1)
       :ok
 
   """

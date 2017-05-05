@@ -1,4 +1,4 @@
-defmodule Zendex.Entity.User do
+defmodule ZenEx.Entity.User do
 
   defstruct [:id, :url, :name, :external_id, :alias, :created_at, :updated_at,:active, :verified,
              :shared, :shared_agent, :locale, :locale_id, :time_zone, :last_login_at, :email, :phone,

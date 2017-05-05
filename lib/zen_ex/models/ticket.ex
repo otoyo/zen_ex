@@ -1,7 +1,7 @@
-defmodule Zendex.Model.Ticket do
-  alias Zendex.Core.Client
-  alias Zendex.Model
-  alias Zendex.Entity.{Ticket,JobStatus}
+defmodule ZenEx.Model.Ticket do
+  alias ZenEx.Core.Client
+  alias ZenEx.Model
+  alias ZenEx.Entity.{Ticket,JobStatus}
 
   @moduledoc """
   Provides functions to operate Zendesk Ticket.
@@ -12,8 +12,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.list
-      [%Zendex.Entity.Ticket{id: xxx, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...]
+      iex> ZenEx.Model.Ticket.list
+      [%ZenEx.Entity.Ticket{id: xxx, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...]
 
   """
   @spec list :: list(%Ticket{})
@@ -27,8 +27,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.show(1)
-      %Zendex.Entity.Ticket{id: 1, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}
+      iex> ZenEx.Model.Ticket.show(1)
+      %ZenEx.Entity.Ticket{id: 1, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}
 
   """
   @spec show(integer) :: %Ticket{}
@@ -42,8 +42,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.create(%Zendex.Entity.Ticket{requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...})
-      %Zendex.Entity.Ticket{requester_id: xxx, ...}
+      iex> ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...})
+      %ZenEx.Entity.Ticket{requester_id: xxx, ...}
 
   """
   @spec create(%Ticket{}) :: %Ticket{}
@@ -57,8 +57,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.update(%Zendex.Entity.Ticket{id: 1, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...})
-      %Zendex.Entity.Ticket{id: 1, requester_id: xxx, ...}
+      iex> ZenEx.Model.Ticket.update(%ZenEx.Entity.Ticket{id: 1, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...})
+      %ZenEx.Entity.Ticket{id: 1, requester_id: xxx, ...}
 
   """
   @spec update(%Ticket{}) :: %Ticket{}
@@ -72,7 +72,7 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.destroy(1)
+      iex> ZenEx.Model.Ticket.destroy(1)
       :ok
 
   """
@@ -90,8 +90,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.create_many([%Zendex.Entity.Ticket{requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...])
-      %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> ZenEx.Model.Ticket.create_many([%ZenEx.Entity.Ticket{requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...])
+      %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
   @spec create_many(list(%Ticket{})) :: %JobStatus{}
@@ -105,8 +105,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.update_many([%Zendex.Entity.Ticket{id: xxx, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...])
-      %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> ZenEx.Model.Ticket.update_many([%ZenEx.Entity.Ticket{id: xxx, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...])
+      %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
   @spec update_many(list(%Ticket{})) :: %JobStatus{}
@@ -120,8 +120,8 @@ defmodule Zendex.Model.Ticket do
 
   ## Examples
 
-      iex> Zendex.Model.Ticket.destroy_many([xxx, ...])
-      %Zendex.Entity.JobStatus{id: "xxx"}
+      iex> ZenEx.Model.Ticket.destroy_many([xxx, ...])
+      %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
   @spec destroy_many(list(integer)) :: %JobStatus{}

@@ -1,9 +1,9 @@
-defmodule Zendex.Model.TicketSpec do
+defmodule ZenEx.Model.TicketSpec do
   use ESpec
 
-  alias Zendex.Core.Client
-  alias Zendex.Entity.{Ticket,JobStatus}
-  alias Zendex.Model
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.{Ticket,JobStatus}
+  alias ZenEx.Model
 
   let :json_tickets do
     ~s({"tickets":[{"id":35436,"subject":"Help I need somebody!"},{"id":20057623,"subject":"Not just anybody!"}]})

@@ -1,6 +1,6 @@
-defmodule Zendex.Model.Locale do
-  alias Zendex.Core.Client
-  alias Zendex.Entity.Locale
+defmodule ZenEx.Model.Locale do
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.Locale
 
   @moduledoc """
   Provides functions to operate Zendesk Locale.
@@ -11,8 +11,8 @@ defmodule Zendex.Model.Locale do
 
   ## Examples
 
-      iex> Zendex.Model.Locale.show("ja")
-      %Zendex.Entity.Locale{id: 67, locale: "ja", ...}
+      iex> ZenEx.Model.Locale.show("ja")
+      %ZenEx.Entity.Locale{id: 67, locale: "ja", ...}
 
   """
   @spec show(integer | String.t) :: %Locale{}

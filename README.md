@@ -1,14 +1,14 @@
-# Zendex [![Build Status](https://travis-ci.org/otoyo/zendex.svg?branch=master)](https://travis-ci.org/otoyo/zendex)
+# zen\_ex [![Build Status](https://travis-ci.org/otoyo/zen_ex.svg?branch=master)](https://travis-ci.org/otoyo/zen_ex)
 
 [Zendesk REST API](https://developer.zendesk.com/rest_api) client for Elixir
 
 ## Installation
 
-Add `zendex` to your list of dependencies in `mix.exs`:
+Add `zen_ex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:zendex, "~> 0.1.0"}]
+  [{:zen_ex, "~> 0.1.0"}]
 end
 ```
 
@@ -21,7 +21,7 @@ Update your dependencies:
 Add your Zendesk settings to your config:
 
 ```elixir
-config :zendex,
+config :zen_ex,
   subdomain: "your-zendesk-subdomain",
   user: "otoyo@otoyo.com",
   api_token: "xxxx"
@@ -33,25 +33,25 @@ See also: [Generating a new API token](https://support.zendesk.com/hc/en-us/arti
 
 ```elixir
 # List users
-users = Zendex.Model.User.list
+users = ZenEx.Model.User.list
 
 # Show user
-user = Zendex.Model.User.show(1)
+user = ZenEx.Model.User.show(1)
 
 # Create user
-user = Zendex.Model.User.create(%Zendex.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
+user = ZenEx.Model.User.create(%ZenEx.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
 
 # List tickets
-tickets = Zendex.Model.Ticket.list
+tickets = ZenEx.Model.Ticket.list
 
 # Show ticket
-ticket = Zendex.Model.Ticket.show(1)
+ticket = ZenEx.Model.Ticket.show(1)
 
 # Create ticket
-ticket = Zendex.Model.Ticket.create(%Zendex.Entity.Ticket{subject: "My printer is on fire!", description: "But no problem."})
+ticket = ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{subject: "My printer is on fire!", description: "But no problem."})
 ```
 
-See also under Zendex.Model.
+See also under ZenEx.Model.
 
 ## Supported API
 
@@ -102,4 +102,4 @@ Contributions are welcome ;)
 
 ## LICENSE
 
-Zendex is released under CC0-1.0 (see LICENSE).
+ZenEx is released under CC0-1.0 (see LICENSE).

@@ -1,10 +1,10 @@
-defmodule Zendex.Model.DynamicContentSpec do
+defmodule ZenEx.Model.DynamicContentSpec do
   use ESpec
 
-  alias Zendex.Core.Client
-  alias Zendex.Entity.DynamicContent
-  alias Zendex.Entity.DynamicContent.Variant
-  alias Zendex.Model
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.DynamicContent
+  alias ZenEx.Entity.DynamicContent.Variant
+  alias ZenEx.Model
 
   let :json_dynamic_contents do
     ~s({"items":[{"id":112233,"name":"mail-address","default_locale_id":1,"variants":[{"id":223443,"content":"Mail address","locale_id":1},{"id":8678530,"content":"メールアドレス","locale_id":67}]},{"id":223344,"name":"subject","default_locale_id":1,"variants":[]}]})

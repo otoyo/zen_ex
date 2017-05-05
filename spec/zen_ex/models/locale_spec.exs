@@ -1,9 +1,9 @@
-defmodule Zendex.Model.LocaleSpec do
+defmodule ZenEx.Model.LocaleSpec do
   use ESpec
 
-  alias Zendex.Core.Client
-  alias Zendex.Entity.Locale
-  alias Zendex.Model
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.Locale
+  alias ZenEx.Model
 
   let :json_locale, do: ~s({"locale":{"id":8,"locale":"de","name":"Deutsch"}})
   let :locale, do: struct(Locale, %{id: 8, locale: "de", name: "Deutsch"})

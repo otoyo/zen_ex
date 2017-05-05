@@ -1,9 +1,9 @@
-defmodule Zendex.Model.UserSpec do
+defmodule ZenEx.Model.UserSpec do
   use ESpec
 
-  alias Zendex.Core.Client
-  alias Zendex.Entity.{User,JobStatus}
-  alias Zendex.Model
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.{User,JobStatus}
+  alias ZenEx.Model
 
   let :json_users do
     ~s({"users":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})

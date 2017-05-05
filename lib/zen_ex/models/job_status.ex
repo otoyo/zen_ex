@@ -1,6 +1,6 @@
-defmodule Zendex.Model.JobStatus do
-  alias Zendex.Core.Client
-  alias Zendex.Entity.JobStatus
+defmodule ZenEx.Model.JobStatus do
+  alias ZenEx.Core.Client
+  alias ZenEx.Entity.JobStatus
 
   @moduledoc """
   Provides functions to operate Zendesk JobStatus.
@@ -11,8 +11,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-      iex> Zendex.Model.JobStatus.list
-      [%Zendex.Entity.JobStatus{id: xxx, ...}, ...]
+      iex> ZenEx.Model.JobStatus.list
+      [%ZenEx.Entity.JobStatus{id: xxx, ...}, ...]
 
   """
   @spec list :: list(%JobStatus{})
@@ -26,8 +26,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-      iex> Zendex.Model.JobStatus.show("xxx")
-      %Zendex.Entity.JobStatus{id: "xxx", ...}
+      iex> ZenEx.Model.JobStatus.show("xxx")
+      %ZenEx.Entity.JobStatus{id: "xxx", ...}
 
   """
   @spec show(binary) :: %JobStatus{}
@@ -41,8 +41,8 @@ defmodule Zendex.Model.JobStatus do
 
   ## Examples
 
-      iex> Zendex.Model.JobStatus.show_many(["xxx", ...])
-      [%Zendex.Entity.JobStatus{id: "xxx", ...}, ...]
+      iex> ZenEx.Model.JobStatus.show_many(["xxx", ...])
+      [%ZenEx.Entity.JobStatus{id: "xxx", ...}, ...]
 
   """
   @spec show_many(list(binary)) :: list(%JobStatus{})

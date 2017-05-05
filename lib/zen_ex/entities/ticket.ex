@@ -1,4 +1,4 @@
-defmodule Zendex.Entity.Ticket do
+defmodule ZenEx.Entity.Ticket do
 
   defstruct [:id, :url, :external_id, :created_at, :updated_at, :type, :subject, :raw_subject,
              :description, :priority, :status, :recipient, :requester_id, :submitter_id, :assignee_id,

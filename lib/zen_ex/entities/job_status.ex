@@ -1,4 +1,4 @@
-defmodule Zendex.Entity.JobStatus do
+defmodule ZenEx.Entity.JobStatus do
 
   defstruct [:id, :url, :total, :progress, :status, :message, :results]
 

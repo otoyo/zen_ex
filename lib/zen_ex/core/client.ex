@@ -1,4 +1,4 @@
-defmodule Zendex.Core.Client do
+defmodule ZenEx.Core.Client do
 
   @moduledoc false
 
@@ -25,10 +25,10 @@ defmodule Zendex.Core.Client do
   end
 
   def build_url(endpoint) do
-    "https://#{Application.get_env(:zendex, :subdomain)}.zendesk.com#{endpoint}"
+    "https://#{Application.get_env(:zen_ex, :subdomain)}.zendesk.com#{endpoint}"
   end
 
   def basic_auth do
-    {"#{Application.get_env(:zendex, :user)}/token", "#{Application.get_env(:zendex, :api_token)}"}
+    {"#{Application.get_env(:zen_ex, :user)}/token", "#{Application.get_env(:zen_ex, :api_token)}"}
   end
 end
