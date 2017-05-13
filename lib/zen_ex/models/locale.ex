@@ -17,13 +17,13 @@ defmodule ZenEx.Model.Locale do
   """
   @spec show(integer | String.t) :: %Locale{}
   def show(id) do
-    Client.get("/api/v2/locales/#{id}.json") |> __create_locale__
+    Client.get("/api/v2/locales/#{id}.json") |> _create_locale
   end
 
 
   @doc false
-  @spec __create_locale__(%HTTPotion.Response{}) :: %Locale{}
-  def __create_locale__(%HTTPotion.Response{} = res) do
+  @spec _create_locale(%HTTPotion.Response{}) :: %Locale{}
+  def _create_locale(%HTTPotion.Response{} = res) do
     res.body |> Poison.decode!(keys: :atoms, as: %{locale: %Locale{}}) |> Map.get(:locale)
   end
 end

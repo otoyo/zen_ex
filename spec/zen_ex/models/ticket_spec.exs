@@ -75,24 +75,24 @@ defmodule ZenEx.Model.TicketSpec do
     it do: expect Model.Ticket.destroy_many(Enum.map(tickets(), &(&1.id))) |> to(be_struct JobStatus)
   end
 
-  describe "__desc_to_comment__" do
+  describe "_desc_to_comment" do
     context "arg is list of tickets" do
-      subject do: Model.Ticket.__desc_to_comment__ tickets()
+      subject do: Model.Ticket._desc_to_comment tickets()
       it do: is_expected() |> to(eq Enum.map(tickets(), &(Map.merge(&1, %{comment: %{body: &1.description}}))))
     end
     context "arg is a ticket" do
-      subject do: Model.Ticket.__desc_to_comment__ ticket()
+      subject do: Model.Ticket._desc_to_comment ticket()
       it do: is_expected() |> to(eq Map.merge(ticket(), %{comment: %{body: ticket().description}}))
     end
   end
 
-  describe "__create_tickets__" do
-    subject do: Model.Ticket.__create_tickets__ response_tickets()
+  describe "_create_tickets" do
+    subject do: Model.Ticket._create_tickets response_tickets()
     it do: is_expected() |> to(eq tickets())
   end
 
-  describe "__create_ticket__" do
-    subject do: Model.Ticket.__create_ticket__ response_ticket()
+  describe "_create_ticket" do
+    subject do: Model.Ticket._create_ticket response_ticket()
     it do: is_expected() |> to(eq ticket())
   end
 end

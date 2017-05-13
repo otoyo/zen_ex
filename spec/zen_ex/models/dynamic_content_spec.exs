@@ -59,24 +59,24 @@ defmodule ZenEx.Model.DynamicContentSpec do
     end
   end
 
-  describe "__create_dynamic_contents__" do
+  describe "_create_dynamic_contents" do
     describe "list of dynamic_content" do
-      subject do: Model.DynamicContent.__create_dynamic_contents__ response_dynamic_contents()
+      subject do: Model.DynamicContent._create_dynamic_contents response_dynamic_contents()
       it do: is_expected() |> to(eq dynamic_contents())
     end
     describe "with variants" do
-      subject do: Model.DynamicContent.__create_dynamic_contents__(response_dynamic_contents()) |> List.first |> Map.get(:variants)
+      subject do: Model.DynamicContent._create_dynamic_contents(response_dynamic_contents()) |> List.first |> Map.get(:variants)
       it do: is_expected() |> to(have_all(fn v -> v |> to(be_struct Variant) end))
     end
   end
 
-  describe "__create_dynamic_content__" do
+  describe "_create_dynamic_content" do
     describe "the dynamic_content" do
-      subject do: Model.DynamicContent.__create_dynamic_content__ response_dynamic_content()
+      subject do: Model.DynamicContent._create_dynamic_content response_dynamic_content()
       it do: is_expected() |> to(eq dynamic_content())
     end
     describe "with variants" do
-      subject do: Model.DynamicContent.__create_dynamic_content__(response_dynamic_content()) |> Map.get(:variants)
+      subject do: Model.DynamicContent._create_dynamic_content(response_dynamic_content()) |> Map.get(:variants)
       it do: is_expected() |> to(have_all(fn v -> v |> to(be_struct Variant) end))
     end
   end

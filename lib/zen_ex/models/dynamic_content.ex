@@ -19,7 +19,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec list :: list(%DynamicContent{})
   def list do
-    Client.get("/api/v2/dynamic_content/items.json") |> __create_dynamic_contents__
+    Client.get("/api/v2/dynamic_content/items.json") |> _create_dynamic_contents
   end
 
 
@@ -34,7 +34,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec show(integer) :: %DynamicContent{}
   def show(id) when is_integer(id) do
-    Client.get("/api/v2/dynamic_content/items/#{id}.json") |> __create_dynamic_content__
+    Client.get("/api/v2/dynamic_content/items/#{id}.json") |> _create_dynamic_content
   end
 
 
@@ -49,7 +49,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec create(%DynamicContent{}) :: %DynamicContent{}
   def create(%DynamicContent{} = dynamic_content) do
-    Client.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}) |> __create_dynamic_content__
+    Client.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}) |> _create_dynamic_content
   end
 
 
@@ -65,7 +65,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec update(%DynamicContent{}) :: %DynamicContent{}
   def update(%DynamicContent{} = dynamic_content) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}) |> __create_dynamic_content__
+    Client.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}) |> _create_dynamic_content
   end
 
 
@@ -88,23 +88,23 @@ defmodule ZenEx.Model.DynamicContent do
 
 
   @doc false
-  @spec __create_dynamic_contents__(%HTTPotion.Response{}) :: list(%DynamicContent{})
-  def __create_dynamic_contents__(%HTTPotion.Response{} = res) do
+  @spec _create_dynamic_contents(%HTTPotion.Response{}) :: list(%DynamicContent{})
+  def _create_dynamic_contents(%HTTPotion.Response{} = res) do
     res.body
     |> Poison.decode!(keys: :atoms, as: %{items: [%DynamicContent{}]})
     |> Map.get(:items)
     |> Enum.map(fn dynamic_content ->
-      Map.update(dynamic_content, :variants, [], &Model.DynamicContent.Variant.__create_variants__/1)
+      Map.update(dynamic_content, :variants, [], &Model.DynamicContent.Variant._create_variants/1)
     end)
   end
 
 
   @doc false
-  @spec __create_dynamic_content__(%HTTPotion.Response{}) :: %DynamicContent{}
-  def __create_dynamic_content__(%HTTPotion.Response{} = res) do
+  @spec _create_dynamic_content(%HTTPotion.Response{}) :: %DynamicContent{}
+  def _create_dynamic_content(%HTTPotion.Response{} = res) do
     res.body
     |> Poison.decode!(keys: :atoms, as: %{item: %DynamicContent{}})
     |> Map.get(:item)
-    |> Map.update(:variants, [], &Model.DynamicContent.Variant.__create_variants__/1)
+    |> Map.update(:variants, [], &Model.DynamicContent.Variant._create_variants/1)
   end
 end

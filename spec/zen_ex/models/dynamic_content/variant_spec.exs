@@ -74,24 +74,24 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     end
   end
 
-  describe "__create_variants__" do
+  describe "_create_variants" do
     context "args as response" do
-      subject do: Model.DynamicContent.Variant.__create_variants__ response_variants()
+      subject do: Model.DynamicContent.Variant._create_variants response_variants()
       it do: is_expected() |> to(eq variants())
     end
     context "args as map" do
-      subject do: Model.DynamicContent.Variant.__create_variants__ Enum.map(variants(), &Map.from_struct/1)
+      subject do: Model.DynamicContent.Variant._create_variants Enum.map(variants(), &Map.from_struct/1)
       it do: is_expected() |> to(eq variants())
     end
   end
 
-  describe "__create_variant__" do
+  describe "_create_variant" do
     context "args as response" do
-      subject do: Model.DynamicContent.Variant.__create_variant__ response_variant()
+      subject do: Model.DynamicContent.Variant._create_variant response_variant()
       it do: is_expected() |> to(eq variant())
     end
     context "args as map" do
-      subject do: Model.DynamicContent.Variant.__create_variant__ Map.from_struct(variant())
+      subject do: Model.DynamicContent.Variant._create_variant Map.from_struct(variant())
       it do: is_expected() |> to(eq variant())
     end
   end
