@@ -20,7 +20,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec list(integer) :: list(%Variant{})
   def list(dynamic_content_id) when is_integer(dynamic_content_id) do
-    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json") |> __create_variants__
+    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json") |> _create_variants
   end
 
 
@@ -35,7 +35,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec show(integer, integer) :: %Variant{}
   def show(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
-    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json") |> __create_variant__
+    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json") |> _create_variant
   end
 
 
@@ -50,7 +50,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create(integer, %Variant{}) :: %Variant{}
   def create(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}) |> __create_variant__
+    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}) |> _create_variant
   end
 
 
@@ -65,7 +65,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create_many(integer, list(%Variant{})) :: %JobStatus{}
   def create_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}) |> Model.JobStatus.__create_job_status__
+    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -80,7 +80,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update(integer, %Variant{}) :: %Variant{}
   def update(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}) |> __create_variant__
+    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}) |> _create_variant
   end
 
 
@@ -95,7 +95,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update_many(integer, list(%Variant{})) :: %JobStatus{}
   def update_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}) |> Model.JobStatus.__create_job_status__
+    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -118,21 +118,21 @@ defmodule ZenEx.Model.DynamicContent.Variant do
 
 
   @doc false
-  @spec __create_variants__(%HTTPotion.Response{}) :: list(%Variant{})
-  def __create_variants__(%HTTPotion.Response{} = res) do
+  @spec _create_variants(%HTTPotion.Response{}) :: list(%Variant{})
+  def _create_variants(%HTTPotion.Response{} = res) do
     res.body |> Poison.decode!(keys: :atoms, as: %{variants: [%Variant{}]}) |> Map.get(:variants)
   end
 
-  @spec __create_variants__(list(Map.t)) :: list(%Variant{})
-  def __create_variants__(maps), do: Enum.map(maps, &__create_variant__/1)
+  @spec _create_variants(list(Map.t)) :: list(%Variant{})
+  def _create_variants(maps), do: Enum.map(maps, &_create_variant/1)
 
 
   @doc false
-  @spec __create_variant__(%HTTPotion.Response{}) :: %Variant{}
-  def __create_variant__(%HTTPotion.Response{} = res) do
+  @spec _create_variant(%HTTPotion.Response{}) :: %Variant{}
+  def _create_variant(%HTTPotion.Response{} = res) do
     res.body |> Poison.decode!(keys: :atoms, as: %{variant: %Variant{}}) |> Map.get(:variant)
   end
 
-  @spec __create_variant__(Map.t) :: %Variant{}
-  def __create_variant__(%{} = map), do: struct(Variant, map)
+  @spec _create_variant(Map.t) :: %Variant{}
+  def _create_variant(%{} = map), do: struct(Variant, map)
 end

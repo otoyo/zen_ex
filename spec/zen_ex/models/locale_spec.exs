@@ -15,8 +15,8 @@ defmodule ZenEx.Model.LocaleSpec do
     it do: expect Model.Locale.show(locale().id) |> to(eq locale())
   end
 
-  describe "__create_locale__" do
-    subject do: Model.Locale.__create_locale__ response_locale()
+  describe "_create_locale" do
+    subject do: Model.Locale._create_locale response_locale()
     it do: is_expected() |> to(eq locale())
   end
 end

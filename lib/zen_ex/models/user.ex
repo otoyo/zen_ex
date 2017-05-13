@@ -18,7 +18,7 @@ defmodule ZenEx.Model.User do
   """
   @spec list :: list(%User{})
   def list do
-    Client.get("/api/v2/users.json") |> __create_users__
+    Client.get("/api/v2/users.json") |> _create_users
   end
 
 
@@ -33,7 +33,7 @@ defmodule ZenEx.Model.User do
   """
   @spec show(integer) :: %User{}
   def show(id) when is_integer(id) do
-    Client.get("/api/v2/users/#{id}.json") |> __create_user__
+    Client.get("/api/v2/users/#{id}.json") |> _create_user
   end
 
 
@@ -48,7 +48,7 @@ defmodule ZenEx.Model.User do
   """
   @spec create(%User{}) :: %User{}
   def create(%User{} = user) do
-    Client.post("/api/v2/users.json", %{user: user}) |> __create_user__
+    Client.post("/api/v2/users.json", %{user: user}) |> _create_user
   end
 
 
@@ -63,7 +63,7 @@ defmodule ZenEx.Model.User do
   """
   @spec update(%User{}) :: %User{}
   def update(%User{} = user) do
-    Client.put("/api/v2/users/#{user.id}.json", %{user: user}) |> __create_user__
+    Client.put("/api/v2/users/#{user.id}.json", %{user: user}) |> _create_user
   end
 
 
@@ -78,7 +78,7 @@ defmodule ZenEx.Model.User do
   """
   @spec create_or_update(%User{}) :: %User{}
   def create_or_update(%User{} = user) do
-    Client.post("/api/v2/users/create_or_update.json", %{user: user}) |> __create_user__
+    Client.post("/api/v2/users/create_or_update.json", %{user: user}) |> _create_user
   end
 
 
@@ -93,7 +93,7 @@ defmodule ZenEx.Model.User do
   """
   @spec destroy(integer) :: %User{}
   def destroy(id) when is_integer(id) do
-    Client.delete("/api/v2/users/#{id}.json") |> __create_user__
+    Client.delete("/api/v2/users/#{id}.json") |> _create_user
   end
 
 
@@ -108,7 +108,7 @@ defmodule ZenEx.Model.User do
   """
   @spec create_many(list(%User{})) :: %JobStatus{}
   def create_many(users) when is_list(users) do
-    Client.post("/api/v2/users/create_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
+    Client.post("/api/v2/users/create_many.json", %{users: users}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -123,7 +123,7 @@ defmodule ZenEx.Model.User do
   """
   @spec update_many(list(%User{})) :: %JobStatus{}
   def update_many(users) when is_list(users) do
-    Client.put("/api/v2/users/update_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
+    Client.put("/api/v2/users/update_many.json", %{users: users}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -138,7 +138,7 @@ defmodule ZenEx.Model.User do
   """
   @spec create_or_update_many(list(%User{})) :: %JobStatus{}
   def create_or_update_many(users) when is_list(users) do
-    Client.post("/api/v2/users/create_or_update_many.json", %{users: users}) |> Model.JobStatus.__create_job_status__
+    Client.post("/api/v2/users/create_or_update_many.json", %{users: users}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -153,20 +153,20 @@ defmodule ZenEx.Model.User do
   """
   @spec destroy_many(list(integer)) :: %JobStatus{}
   def destroy_many(ids) when is_list(ids) do
-    Client.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus.__create_job_status__
+    Client.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus._create_job_status
   end
 
 
   @doc false
-  @spec __create_users__(%HTTPotion.Response{}) :: list(%User{})
-  def __create_users__(%HTTPotion.Response{} = res) do
+  @spec _create_users(%HTTPotion.Response{}) :: list(%User{})
+  def _create_users(%HTTPotion.Response{} = res) do
     res.body |> Poison.decode!(keys: :atoms, as: %{users: [%User{}]}) |> Map.get(:users)
   end
 
 
   @doc false
-  @spec __create_user__(%HTTPotion.Response{}) :: %User{}
-  def __create_user__(%HTTPotion.Response{} = res) do
+  @spec _create_user(%HTTPotion.Response{}) :: %User{}
+  def _create_user(%HTTPotion.Response{} = res) do
     res.body |> Poison.decode!(keys: :atoms, as: %{user: %User{}}) |> Map.get(:user)
   end
 end
