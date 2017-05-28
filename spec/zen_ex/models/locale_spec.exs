@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.LocaleSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.Locale
   alias ZenEx.Model
 
@@ -11,7 +11,7 @@ defmodule ZenEx.Model.LocaleSpec do
   let :response_locale, do: %HTTPotion.Response{body: json_locale()}
 
   describe "show" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_locale() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_locale() end)
     it do: expect Model.Locale.show(locale().id) |> to(eq locale())
   end
 

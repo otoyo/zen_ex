@@ -1,4 +1,4 @@
-defmodule ZenEx.Core.Client do
+defmodule ZenEx.HTTPClient do
 
   @moduledoc false
 

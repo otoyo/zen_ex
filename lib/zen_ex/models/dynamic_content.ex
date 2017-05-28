@@ -1,5 +1,5 @@
 defmodule ZenEx.Model.DynamicContent do
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Model
   alias ZenEx.Entity.DynamicContent
 
@@ -19,7 +19,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec list :: list(%DynamicContent{})
   def list do
-    Client.get("/api/v2/dynamic_content/items.json") |> _create_dynamic_contents
+    HTTPClient.get("/api/v2/dynamic_content/items.json") |> _create_dynamic_contents
   end
 
 
@@ -34,7 +34,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec show(integer) :: %DynamicContent{}
   def show(id) when is_integer(id) do
-    Client.get("/api/v2/dynamic_content/items/#{id}.json") |> _create_dynamic_content
+    HTTPClient.get("/api/v2/dynamic_content/items/#{id}.json") |> _create_dynamic_content
   end
 
 
@@ -49,7 +49,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec create(%DynamicContent{}) :: %DynamicContent{}
   def create(%DynamicContent{} = dynamic_content) do
-    Client.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}) |> _create_dynamic_content
+    HTTPClient.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}) |> _create_dynamic_content
   end
 
 
@@ -65,7 +65,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec update(%DynamicContent{}) :: %DynamicContent{}
   def update(%DynamicContent{} = dynamic_content) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}) |> _create_dynamic_content
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}) |> _create_dynamic_content
   end
 
 
@@ -80,7 +80,7 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec destroy(integer) :: :ok | :error
   def destroy(id) when is_integer(id) do
-    case Client.delete("/api/v2/dynamic_content/items/#{id}.json").status_code do
+    case HTTPClient.delete("/api/v2/dynamic_content/items/#{id}.json").status_code do
       204 -> :ok
       _   -> :error
     end

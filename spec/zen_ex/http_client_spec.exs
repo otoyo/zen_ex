@@ -1,20 +1,20 @@
-defmodule ZenEx.Core.ClientSpec do
+defmodule ZenEx.HTTPClientSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
 
   let :endpoint, do: "/api/v2/users.json"
-  let :url, do: Client.build_url endpoint()
+  let :url, do: HTTPClient.build_url endpoint()
   let :param, do: %{}
   let :body, do: Poison.encode!(param())
   let :headers, do: ["Content-Type": "application/json"]
-  let :basic_auth, do: Client.basic_auth
+  let :basic_auth, do: HTTPClient.basic_auth
 
   describe "get" do
     before do: allow HTTPotion |> to(accept :get, fn(_, _) -> nil end)
 
     it "calls HTTPotion.get" do
-      Client.get endpoint()
+      HTTPClient.get endpoint()
       expect HTTPotion |> to(accepted :get, [url(), [basic_auth: basic_auth()]])
     end
   end
@@ -23,7 +23,7 @@ defmodule ZenEx.Core.ClientSpec do
     before do: allow HTTPotion |> to(accept :post, fn(_, _) -> nil end)
 
     it "calls HTTPotion.post" do
-      Client.post endpoint(), param()
+      HTTPClient.post endpoint(), param()
       expect HTTPotion |> to(accepted :post, [url(), [body: body(), headers: headers(), basic_auth: basic_auth()]])
     end
   end
@@ -32,7 +32,7 @@ defmodule ZenEx.Core.ClientSpec do
     before do: allow HTTPotion |> to(accept :put, fn(_, _) -> nil end)
 
     it "calls HTTPotion.put" do
-      Client.put endpoint(), param()
+      HTTPClient.put endpoint(), param()
       expect HTTPotion |> to(accepted :put, [url(), [body: body(), headers: headers(), basic_auth: basic_auth()]])
     end
   end
@@ -41,18 +41,18 @@ defmodule ZenEx.Core.ClientSpec do
     before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> nil end)
 
     it "calls HTTPotion.delete" do
-      Client.delete endpoint()
+      HTTPClient.delete endpoint()
       expect HTTPotion |> to(accepted :delete, [url(), [basic_auth: basic_auth()]])
     end
   end
 
   describe "build_url" do
-    subject do: Client.build_url endpoint()
+    subject do: HTTPClient.build_url endpoint()
     it do: is_expected() |> to(eq "https://testdomain.zendesk.com/api/v2/users.json")
   end
 
   describe "basic_auth" do
-    subject do: Client.basic_auth
+    subject do: HTTPClient.basic_auth
     it do: is_expected() |> to(eq {"testuser@testdomain.zendesk.com/token", "testapitoken"})
   end
 end

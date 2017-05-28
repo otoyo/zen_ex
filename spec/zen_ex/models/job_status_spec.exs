@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.JobStatusSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.JobStatus
   alias ZenEx.Model
 
@@ -33,17 +33,17 @@ defmodule ZenEx.Model.JobStatusSpec do
   let :response_job_statuses, do: %HTTPotion.Response{body: json_job_statuses()}
 
   describe "list" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_job_statuses() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_job_statuses() end)
     it do: expect Model.JobStatus.list |> to(eq job_statuses())
   end
 
   describe "show" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_job_status() end)
     it do: expect Model.JobStatus.show(job_status().id) |> to(eq job_status())
   end
 
   describe "show_many" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_job_statuses() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_job_statuses() end)
     it do: expect Model.JobStatus.show_many(Enum.map(job_statuses(), &(&1.id))) |> to(eq job_statuses())
   end
 
