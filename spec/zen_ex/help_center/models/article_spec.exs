@@ -20,8 +20,13 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
   let :json_article, do: ~s({"article":{"id":35436,"name":"My printer is on fire!","locale":"en-us","section_id":112233}})
   let :article, do: struct(Article, %{id: 35436, name: "My printer is on fire!", locale: "en-us", section_id: section().id})
 
+  let :json_results do
+    ~s({"results":[{"id":35436,"name":"Help I need somebody!","locale":"en-us","section_id":112233},{"id":20057623,"name":"Not just anybody!","locale":"en-us","section_id":112233}]})
+  end
+
   let :response_article, do: %HTTPotion.Response{body: json_article()}
   let :response_articles, do: %HTTPotion.Response{body: json_articles()}
+  let :response_results, do: %HTTPotion.Response{body: json_results()}
   let :response_204, do: %HTTPotion.Response{status_code: 204}
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
@@ -55,6 +60,11 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
       before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
       it do: expect Model.Article.destroy(article().id) |> to(eq :error)
     end
+  end
+
+  describe "search" do
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_results() end)
+    it do: expect Model.Article.search("query=hoge&updated_after=2017-01-1") |> to(eq articles())
   end
 
   describe "_create_articles" do

@@ -90,6 +90,22 @@ defmodule ZenEx.HelpCenter.Model.Article do
   end
 
 
+  @doc """
+  Search articles by using query.
+
+  ## Examples
+
+      iex> ZenEx.HelpCenter.Model.Article.search("query={search_string}&updated_after=2017-01-01")
+      [%ZenEx.HelpCenter.Entity.Article{id: xxx, name: xxx, locale: xxx, ...}, ...]
+
+  """
+  @spec list(String.t) :: list(%Article{})
+  def search(query) do
+    HTTPClient.get("/api/v2/help_center/articles/search.json?#{query}").body
+    |> Poison.decode!(keys: :atoms, as: %{results: [%Article{}]}) |> Map.get(:results)
+  end
+
+
   @doc false
   @spec _create_articles(%HTTPotion.Response{}) :: list(%Article{})
   def _create_articles(%HTTPotion.Response{} = res) do
