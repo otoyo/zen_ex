@@ -75,7 +75,7 @@ defmodule ZenEx.HelpCenter.Model.Translation do
 
 
   @doc """
-  Create translation specified category or section or article id.
+  Create translation specified by category or section or article id.
 
   ## Examples
 
@@ -100,7 +100,7 @@ defmodule ZenEx.HelpCenter.Model.Translation do
 
 
   @doc """
-  Update translation specified category or section or article id.
+  Update translation specified by category or section or article id.
 
   ## Examples
 
