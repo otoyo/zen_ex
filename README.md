@@ -57,6 +57,8 @@ See also under ZenEx.Model.
 
 ## Supported API
 
+### [Core API](https://developer.zendesk.com/rest_api/docs/core/introduction)
+
 - Users
   - `list`
   - `show`
@@ -97,6 +99,35 @@ See also under ZenEx.Model.
   - `list`
   - `show`
   - `show_many`
+
+### [Help Center API](https://developer.zendesk.com/rest_api/docs/help_center/introduction)
+
+- Categories
+  - `list`
+  - `show`
+  - `create`
+  - `update`
+  - `destroy`
+- Sections
+  - `list`
+  - `show`
+  - `create`
+  - `update`
+  - `destroy`
+- Articles
+  - `list`
+  - `show`
+  - `create`
+  - `update`
+  - `search`
+  - `destroy`
+- Translations
+  - `list`
+  - `list_missing`
+  - `show`
+  - `create`
+  - `update`
+  - `destroy`
 
 ## Contributing
 
