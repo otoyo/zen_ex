@@ -1,5 +1,5 @@
 defmodule ZenEx.Model.Locale do
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.Locale
 
   @moduledoc """
@@ -17,7 +17,7 @@ defmodule ZenEx.Model.Locale do
   """
   @spec show(integer | String.t) :: %Locale{}
   def show(id) do
-    Client.get("/api/v2/locales/#{id}.json") |> _create_locale
+    HTTPClient.get("/api/v2/locales/#{id}.json") |> _create_locale
   end
 
 

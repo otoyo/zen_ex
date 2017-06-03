@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.DynamicContentSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.DynamicContent
   alias ZenEx.Entity.DynamicContent.Variant
   alias ZenEx.Model
@@ -29,32 +29,32 @@ defmodule ZenEx.Model.DynamicContentSpec do
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_dynamic_contents() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_dynamic_contents() end)
     it do: expect Model.DynamicContent.list |> to(eq dynamic_contents())
   end
 
   describe "show" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_dynamic_content() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.show(dynamic_content().id) |> to(eq dynamic_content())
   end
 
   describe "create" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> response_dynamic_content() end)
+    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.create(dynamic_content()) |> to(be_struct DynamicContent)
   end
 
   describe "update" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> response_dynamic_content() end)
+    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.update(dynamic_content()) |> to(be_struct DynamicContent)
   end
 
   describe "destroy" do
     context "response status_code: 204" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_204() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_204() end)
       it do: expect Model.DynamicContent.destroy(dynamic_content().id) |> to(eq :ok)
     end
     context "response status_code: 404" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_404() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
       it do: expect Model.DynamicContent.destroy(dynamic_content().id) |> to(eq :error)
     end
   end

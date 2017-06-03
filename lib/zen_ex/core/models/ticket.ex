@@ -1,5 +1,5 @@
 defmodule ZenEx.Model.Ticket do
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Model
   alias ZenEx.Entity.{Ticket,JobStatus}
 
@@ -18,7 +18,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec list :: list(%Ticket{})
   def list do
-    Client.get("/api/v2/tickets.json") |> _create_tickets
+    HTTPClient.get("/api/v2/tickets.json") |> _create_tickets
   end
 
 
@@ -33,7 +33,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec show(integer) :: %Ticket{}
   def show(id) when is_integer(id) do
-    Client.get("/api/v2/tickets/#{id}.json") |> _create_ticket
+    HTTPClient.get("/api/v2/tickets/#{id}.json") |> _create_ticket
   end
 
 
@@ -48,7 +48,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec create(%Ticket{}) :: %Ticket{}
   def create(%Ticket{} = ticket) do
-    Client.post("/api/v2/tickets.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
+    HTTPClient.post("/api/v2/tickets.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
   end
 
 
@@ -63,7 +63,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec update(%Ticket{}) :: %Ticket{}
   def update(%Ticket{} = ticket) do
-    Client.put("/api/v2/tickets/#{ticket.id}.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
+    HTTPClient.put("/api/v2/tickets/#{ticket.id}.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
   end
 
 
@@ -78,7 +78,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec destroy(integer) :: :ok | :error
   def destroy(id) when is_integer(id) do
-    case Client.delete("/api/v2/tickets/#{id}.json").status_code do
+    case HTTPClient.delete("/api/v2/tickets/#{id}.json").status_code do
       204 -> :ok
       _   -> :error
     end
@@ -96,7 +96,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec create_many(list(%Ticket{})) :: %JobStatus{}
   def create_many(tickets) when is_list(tickets) do
-    Client.post("/api/v2/tickets/create_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
+    HTTPClient.post("/api/v2/tickets/create_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -111,7 +111,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec update_many(list(%Ticket{})) :: %JobStatus{}
   def update_many(tickets) when is_list(tickets) do
-    Client.put("/api/v2/tickets/update_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
+    HTTPClient.put("/api/v2/tickets/update_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -126,7 +126,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec destroy_many(list(integer)) :: %JobStatus{}
   def destroy_many(ids) when is_list(ids) do
-    Client.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus._create_job_status
+    HTTPClient.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus._create_job_status
   end
 
 

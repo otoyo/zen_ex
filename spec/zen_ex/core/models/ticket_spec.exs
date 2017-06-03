@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.TicketSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.{Ticket,JobStatus}
   alias ZenEx.Model
 
@@ -30,48 +30,48 @@ defmodule ZenEx.Model.TicketSpec do
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_tickets() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_tickets() end)
     it do: expect Model.Ticket.list |> to(eq tickets())
   end
 
   describe "show" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_ticket() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_ticket() end)
     it do: expect Model.Ticket.show(ticket().id) |> to(eq ticket())
   end
 
   describe "create" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> response_ticket() end)
+    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_ticket() end)
     it do: expect Model.Ticket.create(ticket()) |> to(be_struct Ticket)
   end
 
   describe "update" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> response_ticket() end)
+    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_ticket() end)
     it do: expect Model.Ticket.update(ticket()) |> to(be_struct Ticket)
   end
 
   describe "destroy" do
     context "response status_code: 204" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_204() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_204() end)
       it do: expect Model.Ticket.destroy(ticket().id) |> to(eq :ok)
     end
     context "response status_code: 404" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_404() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
       it do: expect Model.Ticket.destroy(ticket().id) |> to(eq :error)
     end
   end
 
   describe "create_many" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_job_status() end)
     it do: expect Model.Ticket.create_many(tickets()) |> to(be_struct JobStatus)
   end
 
   describe "update_many" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_job_status() end)
     it do: expect Model.Ticket.update_many(tickets()) |> to(be_struct JobStatus)
   end
 
   describe "destroy_many" do
-    before do: allow Client |> to(accept :delete, fn(_) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_job_status() end)
     it do: expect Model.Ticket.destroy_many(Enum.map(tickets(), &(&1.id))) |> to(be_struct JobStatus)
   end
 

@@ -1,5 +1,5 @@
 defmodule ZenEx.Model.DynamicContent.Variant do
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Model
   alias ZenEx.Entity.JobStatus
   alias ZenEx.Entity.DynamicContent.Variant
@@ -20,7 +20,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec list(integer) :: list(%Variant{})
   def list(dynamic_content_id) when is_integer(dynamic_content_id) do
-    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json") |> _create_variants
+    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json") |> _create_variants
   end
 
 
@@ -35,7 +35,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec show(integer, integer) :: %Variant{}
   def show(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
-    Client.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json") |> _create_variant
+    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json") |> _create_variant
   end
 
 
@@ -50,7 +50,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create(integer, %Variant{}) :: %Variant{}
   def create(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}) |> _create_variant
+    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}) |> _create_variant
   end
 
 
@@ -65,7 +65,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create_many(integer, list(%Variant{})) :: %JobStatus{}
   def create_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    Client.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
+    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -80,7 +80,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update(integer, %Variant{}) :: %Variant{}
   def update(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}) |> _create_variant
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}) |> _create_variant
   end
 
 
@@ -95,7 +95,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update_many(integer, list(%Variant{})) :: %JobStatus{}
   def update_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    Client.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
   end
 
 
@@ -110,7 +110,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec destroy(integer, integer) :: :ok | :error
   def destroy(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
-    case Client.delete("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json").status_code do
+    case HTTPClient.delete("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json").status_code do
       204 -> :ok
       _   -> :error
     end

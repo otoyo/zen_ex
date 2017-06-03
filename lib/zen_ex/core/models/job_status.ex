@@ -1,5 +1,5 @@
 defmodule ZenEx.Model.JobStatus do
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.JobStatus
 
   @moduledoc """
@@ -17,7 +17,7 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec list :: list(%JobStatus{})
   def list do
-    Client.get("/api/v2/job_statuses.json") |> _create_job_statuses
+    HTTPClient.get("/api/v2/job_statuses.json") |> _create_job_statuses
   end
 
 
@@ -32,7 +32,7 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec show(binary) :: %JobStatus{}
   def show(id) when is_binary(id) do
-    Client.get("/api/v2/job_statuses/#{id}.json") |> _create_job_status
+    HTTPClient.get("/api/v2/job_statuses/#{id}.json") |> _create_job_status
   end
 
 
@@ -47,7 +47,7 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec show_many(list(binary)) :: list(%JobStatus{})
   def show_many(ids) when is_list(ids) do
-    Client.get("/api/v2/job_statuses/show_many.json?ids=#{Enum.join(ids, ",")}") |> _create_job_statuses
+    HTTPClient.get("/api/v2/job_statuses/show_many.json?ids=#{Enum.join(ids, ",")}") |> _create_job_statuses
   end
 
 

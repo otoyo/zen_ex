@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.DynamicContent.VariantSpec do
   use ESpec
 
-  alias ZenEx.Core.Client
+  alias ZenEx.HTTPClient
   alias ZenEx.Entity.DynamicContent.Variant
   alias ZenEx.Entity.{DynamicContent,JobStatus}
   alias ZenEx.Model
@@ -34,42 +34,42 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_variants() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_variants() end)
     it do: expect Model.DynamicContent.Variant.list(dynamic_content().id) |> to(eq variants())
   end
 
   describe "show" do
-    before do: allow Client |> to(accept :get, fn(_) -> response_variant() end)
+    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.show(dynamic_content().id, variant().id) |> to(eq variant())
   end
 
   describe "create" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> response_variant() end)
+    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.create(dynamic_content().id, variant()) |> to(be_struct Variant)
   end
 
   describe "create_many" do
-    before do: allow Client |> to(accept :post, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_job_status() end)
     it do: expect Model.DynamicContent.Variant.create_many(dynamic_content().id, variants()) |> to(be_struct JobStatus)
   end
 
   describe "update" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> response_variant() end)
+    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.update(dynamic_content().id, variant()) |> to(be_struct Variant)
   end
 
   describe "update_many" do
-    before do: allow Client |> to(accept :put, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_job_status() end)
     it do: expect Model.DynamicContent.Variant.update_many(dynamic_content().id, variants()) |> to(be_struct JobStatus)
   end
 
   describe "destroy" do
     context "response status_code: 204" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_204() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_204() end)
       it do: expect Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id) |> to(eq :ok)
     end
     context "response status_code: 404" do
-      before do: allow Client |> to(accept :delete, fn(_) -> response_404() end)
+      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
       it do: expect Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id) |> to(eq :error)
     end
   end
