@@ -99,7 +99,7 @@ defmodule ZenEx.HelpCenter.Model.Article do
       [%ZenEx.HelpCenter.Entity.Article{id: xxx, name: xxx, locale: xxx, ...}, ...]
 
   """
-  @spec list(String.t) :: list(%Article{})
+  @spec search(String.t) :: list(%Article{})
   def search(query) do
     HTTPClient.get("/api/v2/help_center/articles/search.json?#{query}").body
     |> Poison.decode!(keys: :atoms, as: %{results: [%Article{}]}) |> Map.get(:results)
