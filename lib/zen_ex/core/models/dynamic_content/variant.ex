@@ -15,12 +15,12 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.Variant.list(xxx)
-      [%ZenEx.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list(integer) :: list(%Variant{})
+  @spec list(integer) :: %ZenEx.Collection{}
   def list(dynamic_content_id) when is_integer(dynamic_content_id) do
-    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json") |> _create_variants
+    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", variants: [Variant])
   end
 
 
@@ -35,7 +35,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec show(integer, integer) :: %Variant{}
   def show(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
-    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json") |> _create_variant
+    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json", variant: Variant)
   end
 
 
@@ -50,7 +50,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create(integer, %Variant{}) :: %Variant{}
   def create(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}) |> _create_variant
+    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}, variant: Variant)
   end
 
 
@@ -65,7 +65,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec create_many(integer, list(%Variant{})) :: %JobStatus{}
   def create_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
+    HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}, job_status: JobStatus)
   end
 
 
@@ -80,7 +80,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update(integer, %Variant{}) :: %Variant{}
   def update(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
-    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}) |> _create_variant
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}, variant: Variant)
   end
 
 
@@ -95,7 +95,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec update_many(integer, list(%Variant{})) :: %JobStatus{}
   def update_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
-    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}) |> Model.JobStatus._create_job_status
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}, job_status: JobStatus)
   end
 
 
@@ -115,24 +115,4 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       _   -> :error
     end
   end
-
-
-  @doc false
-  @spec _create_variants(%HTTPotion.Response{}) :: list(%Variant{})
-  def _create_variants(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{variants: [%Variant{}]}) |> Map.get(:variants)
-  end
-
-  @spec _create_variants(list(Map.t)) :: list(%Variant{})
-  def _create_variants(maps), do: Enum.map(maps, &_create_variant/1)
-
-
-  @doc false
-  @spec _create_variant(%HTTPotion.Response{}) :: %Variant{}
-  def _create_variant(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{variant: %Variant{}}) |> Map.get(:variant)
-  end
-
-  @spec _create_variant(Map.t) :: %Variant{}
-  def _create_variant(%{} = map), do: struct(Variant, map)
 end
