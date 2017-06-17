@@ -13,17 +13,17 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.list("en-us")
-      [%ZenEx.HelpCenter.Entity.Article{id: xxx, name: xxx, locale: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list(String.t) :: list(%Article{})
+  @spec list(String.t) :: %ZenEx.Collection{}
   def list(locale) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/articles.json") |> _create_articles
+    HTTPClient.get("/api/v2/help_center/#{locale}/articles.json", articles: [Article])
   end
 
-  @spec list(String.t, integer) :: list(%Article{})
+  @spec list(String.t, integer) :: %ZenEx.Collection{}
   def list(locale, section_id) when is_integer(section_id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{section_id}/articles.json") |> _create_articles
+    HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{section_id}/articles.json", articles: [Article])
   end
 
 
@@ -38,7 +38,7 @@ defmodule ZenEx.HelpCenter.Model.Article do
   """
   @spec show(String.t, integer) :: %Article{}
   def show(locale, id) when is_integer(id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/articles/#{id}.json") |> _create_article
+    HTTPClient.get("/api/v2/help_center/#{locale}/articles/#{id}.json", article: Article)
   end
 
 
@@ -53,7 +53,7 @@ defmodule ZenEx.HelpCenter.Model.Article do
   """
   @spec create(%Article{}) :: %Article{}
   def create(%Article{} = article) do
-    HTTPClient.post("/api/v2/help_center/articles.json", %{article: article}) |> _create_article
+    HTTPClient.post("/api/v2/help_center/articles.json", %{article: article}, article: Article)
   end
 
 
@@ -68,7 +68,7 @@ defmodule ZenEx.HelpCenter.Model.Article do
   """
   @spec update(%Article{}) :: %Article{}
   def update(%Article{} = article) do
-    HTTPClient.put("/api/v2/help_center/articles/#{article.id}.json", %{article: article}) |> _create_article
+    HTTPClient.put("/api/v2/help_center/articles/#{article.id}.json", %{article: article}, article: Article)
   end
 
 
@@ -96,26 +96,11 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.search("query={search_string}&updated_after=2017-01-01")
-      [%ZenEx.HelpCenter.Entity.Article{id: xxx, name: xxx, locale: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec search(String.t) :: list(%Article{})
+  @spec search(String.t) :: %ZenEx.Collection{}
   def search(query) do
-    HTTPClient.get("/api/v2/help_center/articles/search.json?#{query}").body
-    |> Poison.decode!(keys: :atoms, as: %{results: [%Article{}]}) |> Map.get(:results)
-  end
-
-
-  @doc false
-  @spec _create_articles(%HTTPotion.Response{}) :: list(%Article{})
-  def _create_articles(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{articles: [%Article{}]}) |> Map.get(:articles)
-  end
-
-
-  @doc false
-  @spec _create_article(%HTTPotion.Response{}) :: %Article{}
-  def _create_article(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{article: %Article{}}) |> Map.get(:article)
+    HTTPClient.get("/api/v2/help_center/articles/search.json?#{query}", results: [Article])
   end
 end
