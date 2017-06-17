@@ -12,12 +12,12 @@ defmodule ZenEx.HelpCenter.Model.Category do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Category.list("en-us")
-      [%ZenEx.HelpCenter.Entity.Category{id: xxx, name: xxx, locale: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list(String.t) :: list(%Category{})
+  @spec list(String.t) :: %ZenEx.Collection{}
   def list(locale) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/categories.json") |> _create_categories
+    HTTPClient.get("/api/v2/help_center/#{locale}/categories.json", categories: [Category])
   end
 
 
@@ -32,7 +32,7 @@ defmodule ZenEx.HelpCenter.Model.Category do
   """
   @spec show(String.t, integer) :: %Category{}
   def show(locale, id) when is_integer(id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{id}.json") |> _create_category
+    HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{id}.json", category: Category)
   end
 
 
@@ -47,7 +47,7 @@ defmodule ZenEx.HelpCenter.Model.Category do
   """
   @spec create(%Category{}) :: %Category{}
   def create(%Category{} = category) do
-    HTTPClient.post("/api/v2/help_center/categories.json", %{category: category}) |> _create_category
+    HTTPClient.post("/api/v2/help_center/categories.json", %{category: category}, category: Category)
   end
 
 
@@ -62,7 +62,7 @@ defmodule ZenEx.HelpCenter.Model.Category do
   """
   @spec update(%Category{}) :: %Category{}
   def update(%Category{} = category) do
-    HTTPClient.put("/api/v2/help_center/categories/#{category.id}.json", %{category: category}) |> _create_category
+    HTTPClient.put("/api/v2/help_center/categories/#{category.id}.json", %{category: category}, category: Category)
   end
 
 
@@ -81,19 +81,5 @@ defmodule ZenEx.HelpCenter.Model.Category do
       204 -> :ok
       _   -> :error
     end
-  end
-
-
-  @doc false
-  @spec _create_categories(%HTTPotion.Response{}) :: list(%Category{})
-  def _create_categories(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{categories: [%Category{}]}) |> Map.get(:categories)
-  end
-
-
-  @doc false
-  @spec _create_category(%HTTPotion.Response{}) :: %Category{}
-  def _create_category(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{category: %Category{}}) |> Map.get(:category)
   end
 end

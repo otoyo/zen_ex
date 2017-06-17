@@ -13,12 +13,12 @@ defmodule ZenEx.Model.Ticket do
   ## Examples
 
       iex> ZenEx.Model.Ticket.list
-      [%ZenEx.Entity.Ticket{id: xxx, requester_id: xxx, subject: "Ticket Subject", description: "Ticket desc", ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list :: list(%Ticket{})
+  @spec list :: %ZenEx.Collection{}
   def list do
-    HTTPClient.get("/api/v2/tickets.json") |> _create_tickets
+    HTTPClient.get("/api/v2/tickets.json", tickets: [Ticket])
   end
 
 
@@ -33,7 +33,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec show(integer) :: %Ticket{}
   def show(id) when is_integer(id) do
-    HTTPClient.get("/api/v2/tickets/#{id}.json") |> _create_ticket
+    HTTPClient.get("/api/v2/tickets/#{id}.json", ticket: Ticket)
   end
 
 
@@ -48,7 +48,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec create(%Ticket{}) :: %Ticket{}
   def create(%Ticket{} = ticket) do
-    HTTPClient.post("/api/v2/tickets.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
+    HTTPClient.post("/api/v2/tickets.json", %{ticket: _desc_to_comment(ticket)}, ticket: Ticket)
   end
 
 
@@ -63,7 +63,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec update(%Ticket{}) :: %Ticket{}
   def update(%Ticket{} = ticket) do
-    HTTPClient.put("/api/v2/tickets/#{ticket.id}.json", %{ticket: _desc_to_comment(ticket)}) |> _create_ticket
+    HTTPClient.put("/api/v2/tickets/#{ticket.id}.json", %{ticket: _desc_to_comment(ticket)}, ticket: Ticket)
   end
 
 
@@ -96,7 +96,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec create_many(list(%Ticket{})) :: %JobStatus{}
   def create_many(tickets) when is_list(tickets) do
-    HTTPClient.post("/api/v2/tickets/create_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
+    HTTPClient.post("/api/v2/tickets/create_many.json", %{tickets: _desc_to_comment(tickets)}, job_status: JobStatus)
   end
 
 
@@ -111,7 +111,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec update_many(list(%Ticket{})) :: %JobStatus{}
   def update_many(tickets) when is_list(tickets) do
-    HTTPClient.put("/api/v2/tickets/update_many.json", %{tickets: _desc_to_comment(tickets)}) |> Model.JobStatus._create_job_status
+    HTTPClient.put("/api/v2/tickets/update_many.json", %{tickets: _desc_to_comment(tickets)}, job_status: JobStatus)
   end
 
 
@@ -126,7 +126,7 @@ defmodule ZenEx.Model.Ticket do
   """
   @spec destroy_many(list(integer)) :: %JobStatus{}
   def destroy_many(ids) when is_list(ids) do
-    HTTPClient.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}") |> Model.JobStatus._create_job_status
+    HTTPClient.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}", job_status: JobStatus)
   end
 
 
@@ -136,18 +136,4 @@ defmodule ZenEx.Model.Ticket do
 
   @spec _desc_to_comment(%Ticket{}) :: %Ticket{}
   def _desc_to_comment(%Ticket{} = ticket), do: Map.merge(ticket, %{comment: %{body: ticket.description}})
-
-
-  @doc false
-  @spec _create_tickets(%HTTPotion.Response{}) :: list(%Ticket{})
-  def _create_tickets(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{tickets: [%Ticket{}]}) |> Map.get(:tickets)
-  end
-
-
-  @doc false
-  @spec _create_ticket(%HTTPotion.Response{}) :: %Ticket{}
-  def _create_ticket(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{ticket: %Ticket{}}) |> Map.get(:ticket)
-  end
 end

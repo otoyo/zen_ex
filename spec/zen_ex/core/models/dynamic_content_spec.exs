@@ -1,13 +1,12 @@
 defmodule ZenEx.Model.DynamicContentSpec do
   use ESpec
 
-  alias ZenEx.HTTPClient
   alias ZenEx.Entity.DynamicContent
   alias ZenEx.Entity.DynamicContent.Variant
   alias ZenEx.Model
 
   let :json_dynamic_contents do
-    ~s({"items":[{"id":112233,"name":"mail-address","default_locale_id":1,"variants":[{"id":223443,"content":"Mail address","locale_id":1},{"id":8678530,"content":"メールアドレス","locale_id":67}]},{"id":223344,"name":"subject","default_locale_id":1,"variants":[]}]})
+    ~s({"count":2,"items":[{"id":112233,"name":"mail-address","default_locale_id":1,"variants":[{"id":223443,"content":"Mail address","locale_id":1},{"id":8678530,"content":"メールアドレス","locale_id":67}]},{"id":223344,"name":"subject","default_locale_id":1,"variants":[]}]})
   end
   let :variants do
     [struct(Variant, %{id: 223443, content: "Mail address", locale_id: 1}), struct(Variant, %{id: 8678530, content: "メールアドレス", locale_id: 67})]
@@ -29,55 +28,43 @@ defmodule ZenEx.Model.DynamicContentSpec do
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
-    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_dynamic_contents() end)
-    it do: expect Model.DynamicContent.list |> to(eq dynamic_contents())
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_dynamic_contents() end)
+    it do: expect Model.DynamicContent.list |> to(be_struct ZenEx.Collection)
+    it do: expect Model.DynamicContent.list.entities |> to(eq dynamic_contents())
   end
 
   describe "show" do
-    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_dynamic_content() end)
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.show(dynamic_content().id) |> to(eq dynamic_content())
   end
 
   describe "create" do
-    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_dynamic_content() end)
+    before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.create(dynamic_content()) |> to(be_struct DynamicContent)
   end
 
   describe "update" do
-    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_dynamic_content() end)
+    before do: allow HTTPotion |> to(accept :put, fn(_, _) -> response_dynamic_content() end)
     it do: expect Model.DynamicContent.update(dynamic_content()) |> to(be_struct DynamicContent)
   end
 
   describe "destroy" do
     context "response status_code: 204" do
-      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_204() end)
+      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_204() end)
       it do: expect Model.DynamicContent.destroy(dynamic_content().id) |> to(eq :ok)
     end
     context "response status_code: 404" do
-      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
+      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_404() end)
       it do: expect Model.DynamicContent.destroy(dynamic_content().id) |> to(eq :error)
     end
   end
 
-  describe "_create_dynamic_contents" do
-    describe "list of dynamic_content" do
-      subject do: Model.DynamicContent._create_dynamic_contents response_dynamic_contents()
-      it do: is_expected() |> to(eq dynamic_contents())
+  describe "_build_variants" do
+    subject do
+      dynamic_content()
+      |> Map.update(:variants, [], fn(variants)->  Enum.map(variants, &Map.from_struct/1) end)
+      |> Model.DynamicContent._build_variants
     end
-    describe "with variants" do
-      subject do: Model.DynamicContent._create_dynamic_contents(response_dynamic_contents()) |> List.first |> Map.get(:variants)
-      it do: is_expected() |> to(have_all(fn v -> v |> to(be_struct Variant) end))
-    end
-  end
-
-  describe "_create_dynamic_content" do
-    describe "the dynamic_content" do
-      subject do: Model.DynamicContent._create_dynamic_content response_dynamic_content()
-      it do: is_expected() |> to(eq dynamic_content())
-    end
-    describe "with variants" do
-      subject do: Model.DynamicContent._create_dynamic_content(response_dynamic_content()) |> Map.get(:variants)
-      it do: is_expected() |> to(have_all(fn v -> v |> to(be_struct Variant) end))
-    end
+    it do: expect(subject().variants) |> to(have_all(fn v -> v |> to(be_struct Variant) end))
   end
 end

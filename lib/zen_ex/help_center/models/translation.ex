@@ -12,22 +12,22 @@ defmodule ZenEx.HelpCenter.Model.Translation do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Translation.list(article_id: 1)
-      [%ZenEx.HelpCenter.Entity.Translation{id: xxx, title: xxx, locale: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list(category_id: integer) :: list(%Translation{})
+  @spec list(category_id: integer) :: %ZenEx.Collection{}
   def list(category_id: category_id) do
-    HTTPClient.get("/api/v2/help_center/categories/#{category_id}/translations.json") |> _create_translations
+    HTTPClient.get("/api/v2/help_center/categories/#{category_id}/translations.json", translations: [Translation])
   end
 
-  @spec list(section_id: integer) :: list(%Translation{})
+  @spec list(section_id: integer) :: %ZenEx.Collection{}
   def list(section_id: section_id) do
-    HTTPClient.get("/api/v2/help_center/sections/#{section_id}/translations.json") |> _create_translations
+    HTTPClient.get("/api/v2/help_center/sections/#{section_id}/translations.json", translations: [Translation])
   end
 
-  @spec list(article_id: integer) :: list(%Translation{})
+  @spec list(article_id: integer) :: %ZenEx.Collection{}
   def list(article_id: article_id) do
-    HTTPClient.get("/api/v2/help_center/articles/#{article_id}/translations.json") |> _create_translations
+    HTTPClient.get("/api/v2/help_center/articles/#{article_id}/translations.json", translations: [Translation])
   end
 
 
@@ -70,7 +70,7 @@ defmodule ZenEx.HelpCenter.Model.Translation do
   """
   @spec show(String.t, integer) :: %Translation{}
   def show(locale, article_id) when is_integer(article_id) do
-    HTTPClient.get("/api/v2/help_center/articles/#{article_id}/translations/#{locale}.json") |> _create_translation
+    HTTPClient.get("/api/v2/help_center/articles/#{article_id}/translations/#{locale}.json", translation: Translation)
   end
 
 
@@ -85,17 +85,17 @@ defmodule ZenEx.HelpCenter.Model.Translation do
   """
   @spec create([category_id: integer], %Translation{}) :: %Translation{}
   def create([category_id: category_id], %Translation{} = translation) do
-    HTTPClient.post("/api/v2/help_center/categories/#{category_id}/translations.json", %{translation: translation}) |> _create_translation
+    HTTPClient.post("/api/v2/help_center/categories/#{category_id}/translations.json", %{translation: translation}, translation: Translation)
   end
 
   @spec create([section_id: integer], %Translation{}) :: %Translation{}
   def create([section_id: section_id], %Translation{} = translation) do
-    HTTPClient.post("/api/v2/help_center/sections/#{section_id}/translations.json", %{translation: translation}) |> _create_translation
+    HTTPClient.post("/api/v2/help_center/sections/#{section_id}/translations.json", %{translation: translation}, translation: Translation)
   end
 
   @spec create([article_id: integer], %Translation{}) :: %Translation{}
   def create([article_id: article_id], %Translation{} = translation) do
-    HTTPClient.post("/api/v2/help_center/articles/#{article_id}/translations.json", %{translation: translation}) |> _create_translation
+    HTTPClient.post("/api/v2/help_center/articles/#{article_id}/translations.json", %{translation: translation}, translation: Translation)
   end
 
 
@@ -110,17 +110,17 @@ defmodule ZenEx.HelpCenter.Model.Translation do
   """
   @spec update([category_id: integer], %Translation{}) :: %Translation{}
   def update([category_id: category_id], %Translation{} = translation) do
-    HTTPClient.put("/api/v2/help_center/categories/#{category_id}/translations/#{translation.locale}.json", %{translation: translation}) |> _create_translation
+    HTTPClient.put("/api/v2/help_center/categories/#{category_id}/translations/#{translation.locale}.json", %{translation: translation}, translation: Translation)
   end
 
   @spec update([section_id: integer], %Translation{}) :: %Translation{}
   def update([section_id: section_id], %Translation{} = translation) do
-    HTTPClient.put("/api/v2/help_center/sections/#{section_id}/translations/#{translation.locale}.json", %{translation: translation}) |> _create_translation
+    HTTPClient.put("/api/v2/help_center/sections/#{section_id}/translations/#{translation.locale}.json", %{translation: translation}, translation: Translation)
   end
 
   @spec update([article_id: integer], %Translation{}) :: %Translation{}
   def update([article_id: article_id], %Translation{} = translation) do
-    HTTPClient.put("/api/v2/help_center/articles/#{article_id}/translations/#{translation.locale}.json", %{translation: translation}) |> _create_translation
+    HTTPClient.put("/api/v2/help_center/articles/#{article_id}/translations/#{translation.locale}.json", %{translation: translation}, translation: Translation)
   end
 
 
@@ -139,19 +139,5 @@ defmodule ZenEx.HelpCenter.Model.Translation do
       204 -> :ok
       _   -> :error
     end
-  end
-
-
-  @doc false
-  @spec _create_translations(%HTTPotion.Response{}) :: list(%Translation{})
-  def _create_translations(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{translations: [%Translation{}]}) |> Map.get(:translations)
-  end
-
-
-  @doc false
-  @spec _create_translation(%HTTPotion.Response{}) :: %Translation{}
-  def _create_translation(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{translation: %Translation{}}) |> Map.get(:translation)
   end
 end

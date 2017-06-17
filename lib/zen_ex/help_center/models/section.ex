@@ -13,17 +13,17 @@ defmodule ZenEx.HelpCenter.Model.Section do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Section.list("en-us")
-      [%ZenEx.HelpCenter.Entity.Section{id: xxx, name: xxx, locale: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list(String.t) :: list(%Section{})
+  @spec list(String.t) :: %ZenEx.Collection{}
   def list(locale) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/sections.json") |> _create_sections
+    HTTPClient.get("/api/v2/help_center/#{locale}/sections.json", sections: [Section])
   end
 
-  @spec list(String.t, integer) :: list(%Section{})
+  @spec list(String.t, integer) :: %ZenEx.Collection{}
   def list(locale, category_id) when is_integer(category_id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{category_id}/sections.json") |> _create_sections
+    HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{category_id}/sections.json", sections: [Section])
   end
 
 
@@ -38,7 +38,7 @@ defmodule ZenEx.HelpCenter.Model.Section do
   """
   @spec show(String.t, integer) :: %Section{}
   def show(locale, id) when is_integer(id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{id}.json") |> _create_section
+    HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{id}.json", section: Section)
   end
 
 
@@ -53,7 +53,7 @@ defmodule ZenEx.HelpCenter.Model.Section do
   """
   @spec create(%Section{}) :: %Section{}
   def create(%Section{} = section) do
-    HTTPClient.post("/api/v2/help_center/sections.json", %{section: section}) |> _create_section
+    HTTPClient.post("/api/v2/help_center/sections.json", %{section: section}, section: Section)
   end
 
 
@@ -68,7 +68,7 @@ defmodule ZenEx.HelpCenter.Model.Section do
   """
   @spec update(%Section{}) :: %Section{}
   def update(%Section{} = section) do
-    HTTPClient.put("/api/v2/help_center/sections/#{section.id}.json", %{section: section}) |> _create_section
+    HTTPClient.put("/api/v2/help_center/sections/#{section.id}.json", %{section: section}, section: Section)
   end
 
 
@@ -87,19 +87,5 @@ defmodule ZenEx.HelpCenter.Model.Section do
       204 -> :ok
       _   -> :error
     end
-  end
-
-
-  @doc false
-  @spec _create_sections(%HTTPotion.Response{}) :: list(%Section{})
-  def _create_sections(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{sections: [%Section{}]}) |> Map.get(:sections)
-  end
-
-
-  @doc false
-  @spec _create_section(%HTTPotion.Response{}) :: %Section{}
-  def _create_section(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{section: %Section{}}) |> Map.get(:section)
   end
 end

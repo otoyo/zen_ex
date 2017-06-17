@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.DynamicContent do
   alias ZenEx.HTTPClient
   alias ZenEx.Model
-  alias ZenEx.Entity.DynamicContent
+  alias ZenEx.Entity.{DynamicContent, DynamicContent.Variant}
 
   @moduledoc """
   Provides functions to operate Zendesk Dynamic content.
@@ -14,12 +14,15 @@ defmodule ZenEx.Model.DynamicContent do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.list
-      [%ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list :: list(%DynamicContent{})
+  @spec list :: %ZenEx.Collection{}
   def list do
-    HTTPClient.get("/api/v2/dynamic_content/items.json") |> _create_dynamic_contents
+    HTTPClient.get("/api/v2/dynamic_content/items.json", items: [DynamicContent])
+    |> Map.update(:entities, [], fn(dynamic_contents)->
+      Enum.map(dynamic_contents, &_build_variants/1)
+    end)
   end
 
 
@@ -34,7 +37,8 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec show(integer) :: %DynamicContent{}
   def show(id) when is_integer(id) do
-    HTTPClient.get("/api/v2/dynamic_content/items/#{id}.json") |> _create_dynamic_content
+    HTTPClient.get("/api/v2/dynamic_content/items/#{id}.json", item: DynamicContent)
+    |> _build_variants
   end
 
 
@@ -49,7 +53,8 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec create(%DynamicContent{}) :: %DynamicContent{}
   def create(%DynamicContent{} = dynamic_content) do
-    HTTPClient.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}) |> _create_dynamic_content
+    HTTPClient.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content}, item: DynamicContent)
+    |> _build_variants
   end
 
 
@@ -65,7 +70,8 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec update(%DynamicContent{}) :: %DynamicContent{}
   def update(%DynamicContent{} = dynamic_content) do
-    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}) |> _create_dynamic_content
+    HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content.id}.json", %{item: dynamic_content}, item: DynamicContent)
+    |> _build_variants
   end
 
 
@@ -86,25 +92,12 @@ defmodule ZenEx.Model.DynamicContent do
     end
   end
 
-
   @doc false
-  @spec _create_dynamic_contents(%HTTPotion.Response{}) :: list(%DynamicContent{})
-  def _create_dynamic_contents(%HTTPotion.Response{} = res) do
-    res.body
-    |> Poison.decode!(keys: :atoms, as: %{items: [%DynamicContent{}]})
-    |> Map.get(:items)
-    |> Enum.map(fn dynamic_content ->
-      Map.update(dynamic_content, :variants, [], &Model.DynamicContent.Variant._create_variants/1)
+  @spec _build_variants(%DynamicContent{}) :: %DynamicContent{}
+  def _build_variants(%DynamicContent{} = dynamic_content) do
+    dynamic_content
+    |> Map.update(:variants, [], fn(variants)->
+      Enum.map(variants, fn(variant)-> struct(Variant, variant) end)
     end)
-  end
-
-
-  @doc false
-  @spec _create_dynamic_content(%HTTPotion.Response{}) :: %DynamicContent{}
-  def _create_dynamic_content(%HTTPotion.Response{} = res) do
-    res.body
-    |> Poison.decode!(keys: :atoms, as: %{item: %DynamicContent{}})
-    |> Map.get(:item)
-    |> Map.update(:variants, [], &Model.DynamicContent.Variant._create_variants/1)
   end
 end

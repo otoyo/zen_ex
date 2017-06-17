@@ -1,13 +1,12 @@
 defmodule ZenEx.Model.DynamicContent.VariantSpec do
   use ESpec
 
-  alias ZenEx.HTTPClient
   alias ZenEx.Entity.DynamicContent.Variant
   alias ZenEx.Entity.{DynamicContent,JobStatus}
   alias ZenEx.Model
 
   let :json_variants do
-    ~s({"variants":[{"id":223443,"content":"Mail address","locale_id":1},{"id":8678530,"content":"メールアドレス","locale_id":67}]})
+    ~s({"count":2,"variants":[{"id":223443,"content":"Mail address","locale_id":1},{"id":8678530,"content":"メールアドレス","locale_id":67}]})
   end
   let :variants do
     [struct(Variant, %{id: 223443, content: "Mail address", locale_id: 1}), struct(Variant, %{id: 8678530, content: "メールアドレス", locale_id: 67})]
@@ -34,65 +33,44 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
   let :response_404, do: %HTTPotion.Response{status_code: 404}
 
   describe "list" do
-    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_variants() end)
-    it do: expect Model.DynamicContent.Variant.list(dynamic_content().id) |> to(eq variants())
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_variants() end)
+    it do: expect Model.DynamicContent.Variant.list(dynamic_content().id) |> to(be_struct ZenEx.Collection)
+    it do: expect Model.DynamicContent.Variant.list(dynamic_content().id).entities |> to(eq variants())
   end
 
   describe "show" do
-    before do: allow HTTPClient |> to(accept :get, fn(_) -> response_variant() end)
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.show(dynamic_content().id, variant().id) |> to(eq variant())
   end
 
   describe "create" do
-    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_variant() end)
+    before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.create(dynamic_content().id, variant()) |> to(be_struct Variant)
   end
 
   describe "create_many" do
-    before do: allow HTTPClient |> to(accept :post, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_job_status() end)
     it do: expect Model.DynamicContent.Variant.create_many(dynamic_content().id, variants()) |> to(be_struct JobStatus)
   end
 
   describe "update" do
-    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_variant() end)
+    before do: allow HTTPotion |> to(accept :put, fn(_, _) -> response_variant() end)
     it do: expect Model.DynamicContent.Variant.update(dynamic_content().id, variant()) |> to(be_struct Variant)
   end
 
   describe "update_many" do
-    before do: allow HTTPClient |> to(accept :put, fn(_, _) -> response_job_status() end)
+    before do: allow HTTPotion |> to(accept :put, fn(_, _) -> response_job_status() end)
     it do: expect Model.DynamicContent.Variant.update_many(dynamic_content().id, variants()) |> to(be_struct JobStatus)
   end
 
   describe "destroy" do
     context "response status_code: 204" do
-      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_204() end)
+      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_204() end)
       it do: expect Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id) |> to(eq :ok)
     end
     context "response status_code: 404" do
-      before do: allow HTTPClient |> to(accept :delete, fn(_) -> response_404() end)
+      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_404() end)
       it do: expect Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id) |> to(eq :error)
-    end
-  end
-
-  describe "_create_variants" do
-    context "args as response" do
-      subject do: Model.DynamicContent.Variant._create_variants response_variants()
-      it do: is_expected() |> to(eq variants())
-    end
-    context "args as map" do
-      subject do: Model.DynamicContent.Variant._create_variants Enum.map(variants(), &Map.from_struct/1)
-      it do: is_expected() |> to(eq variants())
-    end
-  end
-
-  describe "_create_variant" do
-    context "args as response" do
-      subject do: Model.DynamicContent.Variant._create_variant response_variant()
-      it do: is_expected() |> to(eq variant())
-    end
-    context "args as map" do
-      subject do: Model.DynamicContent.Variant._create_variant Map.from_struct(variant())
-      it do: is_expected() |> to(eq variant())
     end
   end
 end
