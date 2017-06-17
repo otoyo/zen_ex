@@ -17,13 +17,6 @@ defmodule ZenEx.Model.Locale do
   """
   @spec show(integer | String.t) :: %Locale{}
   def show(id) do
-    HTTPClient.get("/api/v2/locales/#{id}.json") |> _create_locale
-  end
-
-
-  @doc false
-  @spec _create_locale(%HTTPotion.Response{}) :: %Locale{}
-  def _create_locale(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{locale: %Locale{}}) |> Map.get(:locale)
+    HTTPClient.get("/api/v2/locales/#{id}.json", locale: Locale)
   end
 end
