@@ -65,6 +65,6 @@ defmodule ZenEx.Model.DynamicContentSpec do
       |> Map.update(:variants, [], fn(variants)->  Enum.map(variants, &Map.from_struct/1) end)
       |> Model.DynamicContent._build_variants
     end
-    it do: expect(subject.variants) |> to(have_all(fn v -> v |> to(be_struct Variant) end))
+    it do: expect(subject().variants) |> to(have_all(fn v -> v |> to(be_struct Variant) end))
   end
 end
