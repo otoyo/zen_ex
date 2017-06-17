@@ -12,12 +12,12 @@ defmodule ZenEx.Model.JobStatus do
   ## Examples
 
       iex> ZenEx.Model.JobStatus.list
-      [%ZenEx.Entity.JobStatus{id: xxx, ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec list :: list(%JobStatus{})
+  @spec list :: %ZenEx.Collection{}
   def list do
-    HTTPClient.get("/api/v2/job_statuses.json") |> _create_job_statuses
+    HTTPClient.get("/api/v2/job_statuses.json", job_statuses: [JobStatus])
   end
 
 
@@ -32,7 +32,7 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec show(binary) :: %JobStatus{}
   def show(id) when is_binary(id) do
-    HTTPClient.get("/api/v2/job_statuses/#{id}.json") |> _create_job_status
+    HTTPClient.get("/api/v2/job_statuses/#{id}.json", job_status: JobStatus)
   end
 
 
@@ -42,25 +42,11 @@ defmodule ZenEx.Model.JobStatus do
   ## Examples
 
       iex> ZenEx.Model.JobStatus.show_many(["xxx", ...])
-      [%ZenEx.Entity.JobStatus{id: "xxx", ...}, ...]
+      %ZenEx.Collection{}
 
   """
-  @spec show_many(list(binary)) :: list(%JobStatus{})
+  @spec show_many(list(binary)) :: %ZenEx.Collection{}
   def show_many(ids) when is_list(ids) do
-    HTTPClient.get("/api/v2/job_statuses/show_many.json?ids=#{Enum.join(ids, ",")}") |> _create_job_statuses
-  end
-
-
-  @doc false
-  @spec _create_job_statuses(%HTTPotion.Response{}) :: list(%JobStatus{})
-  def _create_job_statuses(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{job_statuses: [%JobStatus{}]}) |> Map.get(:job_statuses)
-  end
-
-
-  @doc false
-  @spec _create_job_status(%HTTPotion.Response{}) :: %JobStatus{}
-  def _create_job_status(%HTTPotion.Response{} = res) do
-    res.body |> Poison.decode!(keys: :atoms, as: %{job_status: %JobStatus{}}) |> Map.get(:job_status)
+    HTTPClient.get("/api/v2/job_statuses/show_many.json?ids=#{Enum.join(ids, ",")}", job_statuses: [JobStatus])
   end
 end
