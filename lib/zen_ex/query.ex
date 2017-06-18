@@ -4,7 +4,7 @@ defmodule ZenEx.Query do
   Query for URL
   """
 
-  @params [:ids, :per_page]
+  @params [:ids, :per_page, :sort_order]
 
   @doc """
   Build query from opts.
