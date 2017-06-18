@@ -1,6 +1,6 @@
 defmodule ZenEx.Model.DynamicContent do
   alias ZenEx.HTTPClient
-  alias ZenEx.Model
+  alias ZenEx.Query
   alias ZenEx.Entity.{DynamicContent, DynamicContent.Variant}
 
   @moduledoc """
@@ -18,8 +18,9 @@ defmodule ZenEx.Model.DynamicContent do
 
   """
   @spec list :: %ZenEx.Collection{}
-  def list do
-    HTTPClient.get("/api/v2/dynamic_content/items.json", items: [DynamicContent])
+  def list(opts \\ []) when is_list(opts) do
+    "/api/v2/dynamic_content/items.json#{Query.build(opts)}"
+    |> HTTPClient.get(items: [DynamicContent])
     |> Map.update(:entities, [], fn(dynamic_contents)->
       Enum.map(dynamic_contents, &_build_variants/1)
     end)

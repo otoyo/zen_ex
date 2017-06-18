@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.Ticket do
   alias ZenEx.HTTPClient
-  alias ZenEx.Model
-  alias ZenEx.Entity.{Ticket,JobStatus}
+  alias ZenEx.Query
+  alias ZenEx.Entity.{Ticket, JobStatus}
 
   @moduledoc """
   Provides functions to operate Zendesk Ticket.
@@ -17,8 +17,9 @@ defmodule ZenEx.Model.Ticket do
 
   """
   @spec list :: %ZenEx.Collection{}
-  def list do
-    HTTPClient.get("/api/v2/tickets.json", tickets: [Ticket])
+  def list(opts \\ []) when is_list(opts) do
+    "/api/v2/tickets.json#{Query.build(opts)}"
+    |> HTTPClient.get(tickets: [Ticket])
   end
 
 
