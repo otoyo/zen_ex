@@ -35,7 +35,7 @@ See also: [Generating a new API token](https://support.zendesk.com/hc/en-us/arti
 
 ```elixir
 # List users
-users = ZenEx.Model.User.list
+users = ZenEx.Model.User.list.entities
 
 # Show user
 user = ZenEx.Model.User.show(1)
@@ -44,7 +44,9 @@ user = ZenEx.Model.User.show(1)
 user = ZenEx.Model.User.create(%ZenEx.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
 
 # List tickets
-tickets = ZenEx.Model.Ticket.list(per_page: 100, sort_order: "desc")
+collection = ZenEx.Model.Ticket.list(per_page: 100, sort_order: "desc")
+tickets = collection.entities
+next_tickets = collection |> ZenEx.Collection.next
 
 # Show ticket
 ticket = ZenEx.Model.Ticket.show(1)
