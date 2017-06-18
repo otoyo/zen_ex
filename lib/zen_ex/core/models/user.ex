@@ -1,7 +1,7 @@
 defmodule ZenEx.Model.User do
   alias ZenEx.HTTPClient
-  alias ZenEx.Model
-  alias ZenEx.Entity.{User,JobStatus}
+  alias ZenEx.Query
+  alias ZenEx.Entity.{User, JobStatus}
 
   @moduledoc """
   Provides functions to operate Zendesk User.
@@ -17,8 +17,9 @@ defmodule ZenEx.Model.User do
 
   """
   @spec list :: %ZenEx.Collection{}
-  def list do
-    HTTPClient.get("/api/v2/users.json", users: [User])
+  def list(opts \\ []) when is_list(opts) do
+    "/api/v2/users.json#{Query.build(opts)}"
+    |> HTTPClient.get(users: [User])
   end
 
 

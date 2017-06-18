@@ -1,5 +1,6 @@
 defmodule ZenEx.HelpCenter.Model.Category do
   alias ZenEx.HTTPClient
+  alias ZenEx.Query
   alias ZenEx.HelpCenter.Entity.Category
 
   @moduledoc """
@@ -15,9 +16,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
       %ZenEx.Collection{}
 
   """
-  @spec list(String.t) :: %ZenEx.Collection{}
-  def list(locale) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/categories.json", categories: [Category])
+  @spec list(keyword()) :: %ZenEx.Collection{}
+  def list(locale, opts \\ []) when is_list(opts) do
+    "/api/v2/help_center/#{locale}/categories.json#{Query.build(opts)}"
+    |> HTTPClient.get(categories: [Category])
   end
 
 

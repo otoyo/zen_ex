@@ -1,5 +1,6 @@
 defmodule ZenEx.HelpCenter.Model.Article do
   alias ZenEx.HTTPClient
+  alias ZenEx.Query
   alias ZenEx.HelpCenter.Entity.Article
 
   @moduledoc """
@@ -15,15 +16,19 @@ defmodule ZenEx.HelpCenter.Model.Article do
       iex> ZenEx.HelpCenter.Model.Article.list("en-us")
       %ZenEx.Collection{}
 
-  """
-  @spec list(String.t) :: %ZenEx.Collection{}
-  def list(locale) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/articles.json", articles: [Article])
-  end
+      iex> ZenEx.HelpCenter.Model.Article.list("en-us", 1)
+      %ZenEx.Collection{}
 
-  @spec list(String.t, integer) :: %ZenEx.Collection{}
-  def list(locale, section_id) when is_integer(section_id) do
-    HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{section_id}/articles.json", articles: [Article])
+  """
+  @spec list(keyword()) :: %ZenEx.Collection{}
+  def list(locale, section_id_or_opts \\ [], opts \\ []) when is_list(opts) do
+    case section_id_or_opts do
+      section_id when is_integer(section_id) ->
+        "/api/v2/help_center/#{locale}/sections/#{section_id}/articles.json#{Query.build(opts)}"
+      _ ->
+        "/api/v2/help_center/#{locale}/articles.json#{Query.build(section_id_or_opts)}"
+    end
+    |> HTTPClient.get(articles: [Article])
   end
 
 

@@ -1,6 +1,6 @@
 defmodule ZenEx.Model.DynamicContent.Variant do
   alias ZenEx.HTTPClient
-  alias ZenEx.Model
+  alias ZenEx.Query
   alias ZenEx.Entity.JobStatus
   alias ZenEx.Entity.DynamicContent.Variant
 
@@ -19,8 +19,9 @@ defmodule ZenEx.Model.DynamicContent.Variant do
 
   """
   @spec list(integer) :: %ZenEx.Collection{}
-  def list(dynamic_content_id) when is_integer(dynamic_content_id) do
-    HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", variants: [Variant])
+  def list(dynamic_content_id, opts \\ []) when is_integer(dynamic_content_id) and is_list(opts) do
+    "/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json#{Query.build(opts)}"
+    |> HTTPClient.get(variants: [Variant])
   end
 
 

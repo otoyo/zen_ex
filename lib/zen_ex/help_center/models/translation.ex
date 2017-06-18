@@ -1,5 +1,6 @@
 defmodule ZenEx.HelpCenter.Model.Translation do
   alias ZenEx.HTTPClient
+  alias ZenEx.Query
   alias ZenEx.HelpCenter.Entity.Translation
 
   @moduledoc """
@@ -15,19 +16,19 @@ defmodule ZenEx.HelpCenter.Model.Translation do
       %ZenEx.Collection{}
 
   """
-  @spec list(category_id: integer) :: %ZenEx.Collection{}
-  def list(category_id: category_id) do
-    HTTPClient.get("/api/v2/help_center/categories/#{category_id}/translations.json", translations: [Translation])
+  @spec list(keyword()) :: %ZenEx.Collection{}
+  def list(_, opts \\ [])
+  def list([category_id: category_id], opts) when is_list(opts) do
+    "/api/v2/help_center/categories/#{category_id}/translations.json#{Query.build(opts)}"
+    |> HTTPClient.get(translations: [Translation])
   end
-
-  @spec list(section_id: integer) :: %ZenEx.Collection{}
-  def list(section_id: section_id) do
-    HTTPClient.get("/api/v2/help_center/sections/#{section_id}/translations.json", translations: [Translation])
+  def list([section_id: section_id], opts) when is_list(opts) do
+    "/api/v2/help_center/sections/#{section_id}/translations.json#{Query.build(opts)}"
+    |> HTTPClient.get(translations: [Translation])
   end
-
-  @spec list(article_id: integer) :: %ZenEx.Collection{}
-  def list(article_id: article_id) do
-    HTTPClient.get("/api/v2/help_center/articles/#{article_id}/translations.json", translations: [Translation])
+  def list([article_id: article_id], opts) when is_list(opts) do
+    "/api/v2/help_center/articles/#{article_id}/translations.json#{Query.build(opts)}"
+    |> HTTPClient.get(translations: [Translation])
   end
 
 

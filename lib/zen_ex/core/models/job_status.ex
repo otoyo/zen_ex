@@ -1,5 +1,6 @@
 defmodule ZenEx.Model.JobStatus do
   alias ZenEx.HTTPClient
+  alias ZenEx.Query
   alias ZenEx.Entity.JobStatus
 
   @moduledoc """
@@ -16,8 +17,9 @@ defmodule ZenEx.Model.JobStatus do
 
   """
   @spec list :: %ZenEx.Collection{}
-  def list do
-    HTTPClient.get("/api/v2/job_statuses.json", job_statuses: [JobStatus])
+  def list(opts \\ []) when is_list(opts) do
+    "/api/v2/job_statuses.json#{Query.build(opts)}"
+    |> HTTPClient.get(job_statuses: [JobStatus])
   end
 
 
@@ -47,6 +49,6 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec show_many(list(binary)) :: %ZenEx.Collection{}
   def show_many(ids) when is_list(ids) do
-    HTTPClient.get("/api/v2/job_statuses/show_many.json?ids=#{Enum.join(ids, ",")}", job_statuses: [JobStatus])
+    HTTPClient.get("/api/v2/job_statuses/show_many.json#{Query.build(ids: ids)}", job_statuses: [JobStatus])
   end
 end
