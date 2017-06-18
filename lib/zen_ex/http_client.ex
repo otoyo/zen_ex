@@ -9,11 +9,11 @@ defmodule ZenEx.HTTPClient do
   def get("https://" <> _ = url) do
     url |> HTTPotion.get([basic_auth: basic_auth()])
   end
-  def get("https://" <> _ = url, decode_as) do
-    url |> get |> _build_entity(decode_as)
-  end
   def get(endpoint) do
     endpoint |> build_url |> get
+  end
+  def get("https://" <> _ = url, decode_as) do
+    url |> get |> _build_entity(decode_as)
   end
   def get(endpoint, decode_as) do
     endpoint |> build_url |> get(decode_as)
