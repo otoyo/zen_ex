@@ -44,7 +44,7 @@ user = ZenEx.Model.User.show(1)
 user = ZenEx.Model.User.create(%ZenEx.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
 
 # List tickets
-tickets = ZenEx.Model.Ticket.list
+tickets = ZenEx.Model.Ticket.list(per_page: 100, sort_order: "desc")
 
 # Show ticket
 ticket = ZenEx.Model.Ticket.show(1)
