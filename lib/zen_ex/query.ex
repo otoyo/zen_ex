@@ -4,8 +4,6 @@ defmodule ZenEx.Query do
   Query for URL
   """
 
-  @params [:ids, :per_page, :sort_order]
-
   @doc """
   Build query from opts.
 
@@ -18,12 +16,12 @@ defmodule ZenEx.Query do
   @spec build(list()) :: String.t
   def build(opts) when is_list(opts) do
     fragments =
-      @params
-      |> Enum.map(fn(param)->
-        case opts[param] do
+      opts
+      |> Enum.map(fn {k,v} ->
+        case v do
           nil                         -> nil
-          values when is_list(values) -> "#{Atom.to_string(param)}=#{Enum.join(values, ",")}"
-          _                           -> "#{Atom.to_string(param)}=#{opts[param]}"
+          values when is_list(values) -> "#{Atom.to_string(k)}=#{Enum.join(values, ",")}"
+          _                           -> "#{Atom.to_string(k)}=#{v}"
         end
       end)
       |> Enum.reject(&is_nil/1)
