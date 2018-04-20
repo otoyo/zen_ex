@@ -27,6 +27,7 @@ defmodule ZenEx.Model.TicketSpec do
   let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
   let :response_204, do: %HTTPotion.Response{status_code: 204}
   let :response_404, do: %HTTPotion.Response{status_code: 404}
+  let :response_timeout, do: %HTTPotion.ErrorResponse{message: "req_timedout"}
 
   describe "list" do
     before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_tickets() end)
@@ -42,6 +43,11 @@ defmodule ZenEx.Model.TicketSpec do
   describe "create" do
     before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_ticket() end)
     it do: expect Model.Ticket.create(ticket()) |> to(be_struct Ticket)
+  end
+
+  describe "create timeout" do
+    before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_timeout() end)
+    it do: expect Model.Ticket.create(ticket()) |> to(eq {:error, "req_timedout"})
   end
 
   describe "update" do
