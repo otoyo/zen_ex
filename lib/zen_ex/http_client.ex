@@ -55,4 +55,7 @@ defmodule ZenEx.HTTPClient do
   def _build_entity(%HTTPotion.Response{} = res, [{key, module}]) do
     res.body |> Poison.decode!(keys: :atoms, as: %{key => struct(module)}) |> Map.get(key)
   end
+  def _build_entity(%HTTPotion.ErrorResponse{message: error}, _) do
+    {:error, error}
+  end
 end
