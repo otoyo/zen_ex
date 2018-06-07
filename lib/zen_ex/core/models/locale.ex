@@ -15,7 +15,7 @@ defmodule ZenEx.Model.Locale do
       %ZenEx.Entity.Locale{id: 67, locale: "ja", ...}
 
   """
-  @spec show(integer | String.t) :: %Locale{}
+  @spec show(integer | String.t) :: %Locale{} | {:error, String.t()}
   def show(id) do
     HTTPClient.get("/api/v2/locales/#{id}.json", locale: Locale)
   end
