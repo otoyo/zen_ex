@@ -16,7 +16,7 @@ defmodule ZenEx.Model.JobStatus do
       %ZenEx.Collection{}
 
   """
-  @spec list :: %ZenEx.Collection{}
+  @spec list :: %ZenEx.Collection{} | {:error, String.t()}
   def list(opts \\ []) when is_list(opts) do
     "/api/v2/job_statuses.json#{Query.build(opts)}"
     |> HTTPClient.get(job_statuses: [JobStatus])
@@ -32,7 +32,7 @@ defmodule ZenEx.Model.JobStatus do
       %ZenEx.Entity.JobStatus{id: "xxx", ...}
 
   """
-  @spec show(binary) :: %JobStatus{}
+  @spec show(binary) :: %JobStatus{} | {:error, String.t()}
   def show(id) when is_binary(id) do
     HTTPClient.get("/api/v2/job_statuses/#{id}.json", job_status: JobStatus)
   end
@@ -47,7 +47,7 @@ defmodule ZenEx.Model.JobStatus do
       %ZenEx.Collection{}
 
   """
-  @spec show_many(list(binary)) :: %ZenEx.Collection{}
+  @spec show_many(list(binary)) :: %ZenEx.Collection{} | {:error, String.t()}
   def show_many(ids) when is_list(ids) do
     HTTPClient.get("/api/v2/job_statuses/show_many.json#{Query.build(ids: ids)}", job_statuses: [JobStatus])
   end

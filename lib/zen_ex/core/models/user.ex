@@ -16,7 +16,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Collection{}
 
   """
-  @spec list :: %ZenEx.Collection{}
+  @spec list :: %ZenEx.Collection{} | {:error, String.t()}
   def list(opts \\ []) when is_list(opts) do
     "/api/v2/users.json#{Query.build(opts)}"
     |> HTTPClient.get(users: [User])
@@ -32,7 +32,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.User{id: 1, name: "xxx", ...}
 
   """
-  @spec show(integer) :: %User{}
+  @spec show(integer) :: %User{} | {:error, String.t()}
   def show(id) when is_integer(id) do
     HTTPClient.get("/api/v2/users/#{id}.json", user: User)
   end
@@ -47,7 +47,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.User{name: "xxx", email: "xxx@xxx", ...}
 
   """
-  @spec create(%User{}) :: %User{}
+  @spec create(%User{}) :: %User{} | {:error, String.t()} | nil
   def create(%User{} = user) do
     HTTPClient.post("/api/v2/users.json", %{user: user}, user: User)
   end
@@ -62,7 +62,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.User{id: 1, name: "xxx", ...}
 
   """
-  @spec update(%User{}) :: %User{}
+  @spec update(%User{}) :: %User{} | {:error, String.t()}
   def update(%User{} = user) do
     HTTPClient.put("/api/v2/users/#{user.id}.json", %{user: user}, user: User)
   end
@@ -77,7 +77,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.User{id: xxx, name: "xxx", email: "xxx@xxx", ...}
 
   """
-  @spec create_or_update(%User{}) :: %User{}
+  @spec create_or_update(%User{}) :: %User{} | {:error, String.t()}
   def create_or_update(%User{} = user) do
     HTTPClient.post("/api/v2/users/create_or_update.json", %{user: user}, user: User)
   end
@@ -92,7 +92,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.User{id: 1, name: "xxx", active: false, ...}
 
   """
-  @spec destroy(integer) :: %User{}
+  @spec destroy(integer) :: %User{} | {:error, String.t()}
   def destroy(id) when is_integer(id) do
     HTTPClient.delete("/api/v2/users/#{id}.json", user: User)
   end
@@ -107,7 +107,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec create_many(list(%User{})) :: %JobStatus{}
+  @spec create_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
   def create_many(users) when is_list(users) do
     HTTPClient.post("/api/v2/users/create_many.json", %{users: users}, job_status: JobStatus)
   end
@@ -122,7 +122,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec update_many(list(%User{})) :: %JobStatus{}
+  @spec update_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
   def update_many(users) when is_list(users) do
     HTTPClient.put("/api/v2/users/update_many.json", %{users: users}, job_status: JobStatus)
   end
@@ -137,7 +137,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec create_or_update_many(list(%User{})) :: %JobStatus{}
+  @spec create_or_update_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
   def create_or_update_many(users) when is_list(users) do
     HTTPClient.post("/api/v2/users/create_or_update_many.json", %{users: users}, job_status: JobStatus)
   end
@@ -152,7 +152,7 @@ defmodule ZenEx.Model.User do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec destroy_many(list(integer)) :: %JobStatus{}
+  @spec destroy_many(list(integer)) :: %JobStatus{} | {:error, String.t()}
   def destroy_many(ids) when is_list(ids) do
     HTTPClient.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}", job_status: JobStatus)
   end

@@ -18,7 +18,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Collection{}
 
   """
-  @spec list(integer) :: %ZenEx.Collection{}
+  @spec list(integer) :: %ZenEx.Collection{} | {:error, String.t()}
   def list(dynamic_content_id, opts \\ []) when is_integer(dynamic_content_id) and is_list(opts) do
     "/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json#{Query.build(opts)}"
     |> HTTPClient.get(variants: [Variant])
@@ -34,7 +34,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
-  @spec show(integer, integer) :: %Variant{}
+  @spec show(integer, integer) :: %Variant{} | {:error, String.t()}
   def show(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
     HTTPClient.get("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json", variant: Variant)
   end
@@ -49,7 +49,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
-  @spec create(integer, %Variant{}) :: %Variant{}
+  @spec create(integer, %Variant{}) :: %Variant{} | {:error, String.t()}
   def create(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
     HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants.json", %{variant: variant}, variant: Variant)
   end
@@ -64,7 +64,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec create_many(integer, list(%Variant{})) :: %JobStatus{}
+  @spec create_many(integer, list(%Variant{})) :: %JobStatus{} | {:error, String.t()}
   def create_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
     HTTPClient.post("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/create_many.json", %{variants: variants}, job_status: JobStatus)
   end
@@ -79,7 +79,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Entity.DynamicContent.Variant{id: xxx, default: xxx, content: "xxx", ...}
 
   """
-  @spec update(integer, %Variant{}) :: %Variant{}
+  @spec update(integer, %Variant{}) :: %Variant{} | {:error, String.t()}
   def update(dynamic_content_id, %Variant{} = variant) when is_integer(dynamic_content_id) do
     HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant.id}.json", %{variant: variant}, variant: Variant)
   end
@@ -94,7 +94,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
       %ZenEx.Entity.JobStatus{id: "xxx"}
 
   """
-  @spec update_many(integer, list(%Variant{})) :: %JobStatus{}
+  @spec update_many(integer, list(%Variant{})) :: %JobStatus{} | {:error, String.t()}
   def update_many(dynamic_content_id, variants) when is_integer(dynamic_content_id) and is_list(variants) do
     HTTPClient.put("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/update_many.json", %{variants: variants}, job_status: JobStatus)
   end
