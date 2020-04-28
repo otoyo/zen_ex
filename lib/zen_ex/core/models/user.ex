@@ -156,4 +156,28 @@ defmodule ZenEx.Model.User do
   def destroy_many(ids) when is_list(ids) do
     HTTPClient.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}", job_status: JobStatus)
   end
+
+  @doc """
+  Search for users specified by query.
+
+  ## Examples
+
+      iex> ZenEx.Model.User.search(%{email: "first.last@domain.com"})
+      %ZenEx.Collection{}
+
+      iex> ZenEx.Model.User.search("David"})
+      %ZenEx.Collection{}
+
+  """
+  @spec search(map()) :: %ZenEx.Collection{} | {:error, String.t()}
+  def search(opts) when is_map(opts) do
+    query = Map.keys(opts) |> Enum.map(fn key -> "#{key}:#{opts[key]}" end) |> Enum.join(" ")
+    search(query)
+  end
+
+  @spec search(String.t()) :: %ZenEx.Collection{} | {:error, String.t()}
+  def search(query) do
+    "/api/v2/users/search.json?query=#{query}"
+    |> HTTPClient.get(users: [User])
+  end
 end
