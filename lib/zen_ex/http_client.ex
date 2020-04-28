@@ -37,11 +37,11 @@ defmodule ZenEx.HTTPClient do
   end
 
   def build_url(endpoint) do
-    "https://#{Application.get_env(:zen_ex, :subdomain)}.zendesk.com#{endpoint}"
+    "https://#{get_env(:subdomain)}.zendesk.com#{endpoint}"
   end
 
   def basic_auth do
-    {"#{Application.get_env(:zen_ex, :user)}/token", "#{Application.get_env(:zen_ex, :api_token)}"}
+    {"#{get_env(:user)}/token", "#{get_env(:api_token)}"}
   end
 
   def _build_entity(%HTTPotion.Response{} = res, [{key, [module]}]) do
@@ -57,5 +57,10 @@ defmodule ZenEx.HTTPClient do
   end
   def _build_entity(%HTTPotion.ErrorResponse{message: error}, _) do
     {:error, error}
+  end
+
+  defp get_env(key) do
+    config_module = Process.get(:zendesk_config_module)
+    if config_module, do: Application.get_env(:zen_ex, config_module) |> Keyword.get(key), else: Application.get_env(:zen_ex, key)
   end
 end
