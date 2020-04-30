@@ -60,7 +60,9 @@ defmodule ZenEx.HTTPClient do
   end
 
   defp get_env(key) do
-    config_module = Process.get(:zendesk_config_module)
-    if config_module, do: Application.get_env(:zen_ex, config_module) |> Keyword.get(key), else: Application.get_env(:zen_ex, key)
-  end
+   case Process.get(:zendesk_config_module) do
+     nil -> Application.get_env(:zen_ex, key)
+     config_module -> Application.get_env(:zen_ex, config_module)[key]
+   end
+ end
 end
