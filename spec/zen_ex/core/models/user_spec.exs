@@ -75,4 +75,24 @@ defmodule ZenEx.Model.UserSpec do
     before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_job_status() end)
     it do: expect Model.User.destroy_many(Enum.map(users(), &(&1.id))) |> to(be_struct JobStatus)
   end
+
+  describe "search" do
+    context "when argument is a map" do
+      before do: allow HTTPotion |> to(accept :get, fn(url, _) ->
+        it do: expect url |> to(eq "/api/v2/users/search.json?query=email:first.last@example.com")
+        response_users()
+      end)
+      it do: expect Model.User.search(%{email: "first.last@example.com"}) |> to(be_struct ZenEx.Collection)
+      it do: expect Model.User.search(%{email: "first.last@example.com"}).entities |> to(eq users())
+    end
+
+    context "when argument is a string" do
+      before do: allow HTTPotion |> to(accept :get, fn(url, _) ->
+        it do: expect url |> to(eq "/api/v2/users/search.json?query=my_string")
+        response_users()
+      end)
+      it do: expect Model.User.search("my_string") |> to(be_struct ZenEx.Collection)
+      it do: expect Model.User.search("my_string").entities |> to(eq users())
+    end
+  end
 end
