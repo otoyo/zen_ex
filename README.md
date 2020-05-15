@@ -57,6 +57,42 @@ ticket = ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{subject: "My printer is 
 
 See also under ZenEx.Model.
 
+## Supporting multiple Zendesk configs
+You may need to interact with more than one instance of Zendesk. In order to facilitate that there is a small override
+that can be put into the Process dictionary that will tell it to look for config settings keyed against a class name.
+
+For example:
+
+config/config.exs
+```
+config :zen_ex,
+  subdomain: System.get_env("ZENDESK_SUBDOMAIN"),
+  user: System.get_env("ZENDESK_USER_EMAIL"),
+  api_token: System.get_env("ZENDESK_API_TOKEN")
+
+config :zen_ex, ZendeskAlt,
+  subdomain: System.get_env("ZENDESK_ALT_SUBDOMAIN"),
+  user: System.get_env("ZENDESK_ALT_USER_EMAIL"),
+  api_token: System.get_env("ZENDESK_ALT_API_TOKEN")
+```
+
+Then whenever you want to use the alternate config, before using anything in the `zen_ex` library make sure to
+add a line of code like the following:
+
+```
+Process.put(:zendesk_config_module, ZendeskAlt)
+```
+
+Anytime you use the zendesk library after that it will use the alternate config until you remove that process
+dictionary entry. It is good practice to put it back when you are done.
+
+```
+Process.put(:zendesk_config_module, nil)
+```
+
+If you do not add a `:zendesk_config_module` key to the Process dictionary then it will continue to use the
+default `zen_ex` config settings.
+
 ## Supported API
 
 ### [Core API](https://developer.zendesk.com/rest_api/docs/core/introduction)
@@ -72,6 +108,7 @@ See also under ZenEx.Model.
   - `update_many`
   - `create_or_update_many`
   - `destroy_many`
+  - `search`
 - Tickets
   - `list`
   - `show`
