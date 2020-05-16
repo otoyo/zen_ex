@@ -1,6 +1,7 @@
 defmodule ZenEx.Model.Ticket do
   alias ZenEx.HTTPClient
   alias ZenEx.Query
+  alias ZenEx.SearchQuery
   alias ZenEx.Entity.{Ticket, JobStatus}
 
   @moduledoc """
@@ -128,6 +129,29 @@ defmodule ZenEx.Model.Ticket do
   @spec destroy_many(list(integer)) :: %JobStatus{} | {:error, String.t()}
   def destroy_many(ids) when is_list(ids) do
     HTTPClient.delete("/api/v2/tickets/destroy_many.json?ids=#{Enum.join(ids, ",")}", job_status: JobStatus)
+  end
+
+  @doc """
+  Search for users specified by query.
+
+  ## Examples
+
+      iex> ZenEx.Model.User.search(%{email: "first.last@domain.com"})
+      %ZenEx.Collection{}
+
+      iex> ZenEx.Model.User.search("David"})
+      %ZenEx.Collection{}
+
+  """
+  @spec search(map()) :: %ZenEx.Collection{} | {:error, String.t()}
+  def search(opts) when is_map(opts) do
+    search(SearchQuery.build(opts))
+  end
+
+  @spec search(String.t()) :: %ZenEx.Collection{} | {:error, String.t()}
+  def search(query) do
+    "/api/v2/users/search.json?query=type:ticket #{query}"
+    |> HTTPClient.get(results: [Ticket])
   end
 
 

@@ -22,8 +22,13 @@ defmodule ZenEx.Model.TicketSpec do
     struct(JobStatus, %{id: "8b726e606741012ffc2d782bcb7848fe", status: "completed"})
   end
 
+  let :json_search_tickets do
+    ~s({"count":2,"results":[{"id":35436,"subject":"Help I need somebody!"},{"id":20057623,"subject":"Not just anybody!"}]})
+  end
+
   let :response_ticket, do: %HTTPotion.Response{body: json_ticket()}
   let :response_tickets, do: %HTTPotion.Response{body: json_tickets()}
+  let :response_search_tickets, do: %HTTPotion.Response{body: json_search_tickets()}
   let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
   let :response_204, do: %HTTPotion.Response{status_code: 204}
   let :response_404, do: %HTTPotion.Response{status_code: 404}
@@ -79,6 +84,20 @@ defmodule ZenEx.Model.TicketSpec do
   describe "destroy_many" do
     before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_job_status() end)
     it do: expect Model.Ticket.destroy_many(Enum.map(tickets(), &(&1.id))) |> to(be_struct JobStatus)
+  end
+
+  describe "search" do
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_search_tickets() end)
+
+    context "when argument is a map" do
+      it do: expect Model.Ticket.search(%{status: "open"}) |> to(be_struct ZenEx.Collection)
+      it do: expect Model.Ticket.search(%{status: "open"}).entities |> to(eq tickets())
+    end
+
+    context "when argument is a string" do
+      it do: expect Model.Ticket.search("my_string") |> to(be_struct ZenEx.Collection)
+      it do: expect Model.Ticket.search("my_string").entities |> to(eq tickets())
+    end
   end
 
   describe "_desc_to_comment" do
