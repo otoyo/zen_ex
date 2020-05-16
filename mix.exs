@@ -7,7 +7,7 @@ defmodule ZenEx.Mixfile do
 
   def project do
     [app: :zen_ex,
-     version: "0.4.1",
+     version: "0.4.2",
      elixir: "~> 1.7",
      description: @description,
      package: package(),
