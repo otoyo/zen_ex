@@ -21,8 +21,13 @@ defmodule ZenEx.Model.UserSpec do
     struct(JobStatus, %{id: "8b726e606741012ffc2d782bcb7848fe", status: "completed"})
   end
 
+  let :json_search_users do
+    ~s({"count":2,"results":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
+  end
+
   let :response_user, do: %HTTPotion.Response{body: json_user()}
   let :response_users, do: %HTTPotion.Response{body: json_users()}
+  let :response_search_users, do: %HTTPotion.Response{body: json_search_users()}
   let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
 
   describe "list" do
@@ -77,7 +82,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   describe "search" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_users() end)
+    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_search_users() end)
 
     context "when argument is a map" do
       it do: expect Model.User.search(%{email: "first.last@example.com"}) |> to(be_struct ZenEx.Collection)
