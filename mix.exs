@@ -42,9 +42,9 @@ defmodule ZenEx.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:earmark, "~> 1.2.1", only: :dev, runtime: false},
-      {:espec, "~> 1.5.1", only: :test},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:earmark, "~> 1.4.3", only: :dev, runtime: false},
+      {:espec, "~> 1.8.2", only: :test},
+      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:httpotion, "~> 3.0.2"},
       {:poison, "~> 3.0"}
     ]
