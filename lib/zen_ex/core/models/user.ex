@@ -1,6 +1,7 @@
 defmodule ZenEx.Model.User do
   alias ZenEx.HTTPClient
   alias ZenEx.Query
+  alias ZenEx.SearchQuery
   alias ZenEx.Entity.{User, JobStatus}
 
   @moduledoc """
@@ -171,8 +172,7 @@ defmodule ZenEx.Model.User do
   """
   @spec search(map()) :: %ZenEx.Collection{} | {:error, String.t()}
   def search(opts) when is_map(opts) do
-    query = Map.keys(opts) |> Enum.map(fn key -> "#{key}:#{opts[key]}" end) |> Enum.join(" ")
-    search(query)
+    search(SearchQuery.build(opts))
   end
 
   @spec search(String.t()) :: %ZenEx.Collection{} | {:error, String.t()}
