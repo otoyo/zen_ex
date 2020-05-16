@@ -10,7 +10,7 @@ Add `zen_ex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:zen_ex, "~> 0.3.0"}]
+  [{:zen_ex, "~> 0.4"}]
 end
 ```
 
