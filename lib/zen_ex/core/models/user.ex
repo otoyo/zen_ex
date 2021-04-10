@@ -178,6 +178,6 @@ defmodule ZenEx.Model.User do
   @spec search(String.t()) :: %ZenEx.Collection{} | {:error, String.t()}
   def search(query) do
     "/api/v2/users/search.json?query=#{query}"
-    |> HTTPClient.get(results: [User])
+    |> HTTPClient.get(users: [User])
   end
 end

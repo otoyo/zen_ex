@@ -27,7 +27,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   let :json_search_users do
-    ~s({"count":2,"results":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
+    ~s({"count":2,"users":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
   end
 
   let(:response_user, do: %HTTPotion.Response{body: json_user()})
