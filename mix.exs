@@ -6,21 +6,25 @@ defmodule ZenEx.Mixfile do
   """
 
   def project do
-    [app: :zen_ex,
-     version: "0.4.3",
-     elixir: "~> 1.7",
-     description: @description,
-     package: package(),
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     preferred_cli_env: [espec: :test],
-     deps: deps()]
+    [
+      app: :zen_ex,
+      version: "0.4.4",
+      elixir: "~> 1.7",
+      description: @description,
+      package: package(),
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      preferred_cli_env: [espec: :test],
+      deps: deps()
+    ]
   end
 
   defp package do
-    [maintainers: ["otoyo"],
-     licenses: ["CC0-1.0"],
-     links: %{"Github" => "https://github.com/otoyo/zen_ex"}]
+    [
+      maintainers: ["otoyo"],
+      licenses: ["CC0-1.0"],
+      links: %{"Github" => "https://github.com/otoyo/zen_ex"}
+    ]
   end
 
   # Configuration for the OTP application
