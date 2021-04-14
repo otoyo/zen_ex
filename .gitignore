@@ -22,3 +22,6 @@ erl_crash.dump
 # Ignore config for each env
 /config/dev.exs
 /config/prod.exs
+
+# Asdf
+.tool-versions
