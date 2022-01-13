@@ -64,10 +64,6 @@ jobs:
           mix dialyzer --plt
           mix compile
 
-      - name: Setup test database
-        run: |
-          mix ecto.setup
-
       - name: Tests
         run: mix espec
 
