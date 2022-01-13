@@ -1,49 +1,36 @@
-name: Tests
+name: Backend Linters
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: pull_request
+
+env:
+  FORCE_COLOR: 1
+
+defaults:
+  run:
+    working-directory: backend
 
 jobs:
-  pre_job:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          cancel_others: "true"
-          concurrent_skipping: "same_content_newer"
-          skip_after_successful_duplicate: "true"
-          paths_ignore: '["**/README.md", "**/docs/**"]'
-          do_not_skip: '["workflow_dispatch", "schedule", "push"]'
-  
-  tests-backend:
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-    needs: pre_job
+  rubocop:
+    name: Credo
+    runs-on: ubuntu-18.04
     env:
       MIX_ENV: test
-
-    name: Mix Tests
     strategy:
       matrix:
-        elixir: ["1.12", "1.13"]
+        elixir: ["1.12"]
         otp: ["24"]
-    runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+      - name: Checkout Github repo
         uses: actions/checkout@v2
-
       - name: Sets up an Erlang/OTP environment
         uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
-
       - name: Retrieve cached dependencies
         uses: actions/cache@v2
         id: mix-cache
@@ -63,12 +50,6 @@ jobs:
           mix deps.compile
           mix dialyzer --plt
           mix compile
-
-      - name: Setup test database
-        run: |
-          mix ecto.setup
-
-      - name: Tests
-        run: mix espec
-
-
+      - run: mix format --check-formatted
+      - run: mix credo
+      - run: mix dialyzer --no-check --ignore-exit-status
