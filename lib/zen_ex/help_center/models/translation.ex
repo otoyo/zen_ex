@@ -136,7 +136,7 @@ defmodule ZenEx.HelpCenter.Model.Translation do
   """
   @spec destroy(integer) :: :ok | :error
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/help_center/translations/#{id}.json").status_code do
+    case HTTPClient.delete("/api/v2/help_center/translations/#{id}.json").status do
       204 -> :ok
       _   -> :error
     end

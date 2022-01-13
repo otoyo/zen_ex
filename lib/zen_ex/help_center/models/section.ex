@@ -88,7 +88,7 @@ defmodule ZenEx.HelpCenter.Model.Section do
   """
   @spec destroy(integer) :: :ok | :error
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/help_center/sections/#{id}.json").status_code do
+    case HTTPClient.delete("/api/v2/help_center/sections/#{id}.json").status do
       204 -> :ok
       _   -> :error
     end

@@ -6,7 +6,8 @@ defmodule ZenEx.Collection do
 
   alias ZenEx.{HTTPClient, Collection}
 
-  defstruct [:entities, :count, :next_page, :previous_page, :decode_as]
+  @derive Jason.Encoder
+defstruct [:entities, :count, :next_page, :previous_page, :decode_as]
 
   @doc """
   Get next page.

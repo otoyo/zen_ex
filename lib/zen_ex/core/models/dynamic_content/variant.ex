@@ -111,7 +111,7 @@ defmodule ZenEx.Model.DynamicContent.Variant do
   """
   @spec destroy(integer, integer) :: :ok | :error
   def destroy(dynamic_content_id, variant_id) when is_integer(dynamic_content_id) and is_integer(variant_id) do
-    case HTTPClient.delete("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json").status_code do
+    case HTTPClient.delete("/api/v2/dynamic_content/items/#{dynamic_content_id}/variants/#{variant_id}.json").status do
       204 -> :ok
       _   -> :error
     end

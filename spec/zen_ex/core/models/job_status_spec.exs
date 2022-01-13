@@ -1,7 +1,8 @@
 defmodule ZenEx.Model.JobStatusSpec do
   use ESpec
 
-  alias ZenEx.Entity.JobStatus
+  import Tesla.Mock
+alias ZenEx.Entity.JobStatus
   alias ZenEx.Model
 
   let :json_job_statuses do
@@ -28,22 +29,22 @@ defmodule ZenEx.Model.JobStatusSpec do
              ]})
   end
 
-  let :response_job_status, do: %HTTPotion.Response{body: json_job_status()}
-  let :response_job_statuses, do: %HTTPotion.Response{body: json_job_statuses()}
+  let :response_job_status, do: %Tesla.Env{body: json_job_status()}
+  let :response_job_statuses, do: %Tesla.Env{body: json_job_statuses()}
 
   describe "list" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_job_statuses() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_job_statuses()} end)
     it do: expect Model.JobStatus.list |> to(be_struct ZenEx.Collection)
     it do: expect Model.JobStatus.list.entities |> to(eq job_statuses())
   end
 
   describe "show" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_job_status() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_job_status()} end)
     it do: expect Model.JobStatus.show(job_status().id) |> to(eq job_status())
   end
 
   describe "show_many" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_job_statuses() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_job_statuses()} end)
     it do: expect Model.JobStatus.show_many(Enum.map(job_statuses(), &(&1.id))) |> to(be_struct ZenEx.Collection)
     it do: expect Model.JobStatus.show_many(Enum.map(job_statuses(), &(&1.id))).entities |> to(eq job_statuses())
   end

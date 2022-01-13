@@ -1,6 +1,7 @@
 defmodule ZenEx.HelpCenter.Model.TranslationSpec do
   use ESpec
 
+  import Tesla.Mock
   alias ZenEx.HelpCenter.Entity.Translation
   alias ZenEx.HelpCenter.Model
 
@@ -19,14 +20,14 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     ~s({"locales":["en-us","ja"]})
   end
 
-  let :response_translation, do: %HTTPotion.Response{body: json_translation()}
-  let :response_translations, do: %HTTPotion.Response{body: json_translations()}
-  let :response_locales, do: %HTTPotion.Response{body: json_locales()}
-  let :response_204, do: %HTTPotion.Response{status_code: 204}
-  let :response_404, do: %HTTPotion.Response{status_code: 404}
+  let :response_translation, do: %Tesla.Env{body: json_translation()}
+  let :response_translations, do: %Tesla.Env{body: json_translations()}
+  let :response_locales, do: %Tesla.Env{body: json_locales()}
+  let :response_204, do: %Tesla.Env{status: 204}
+  let :response_404, do: %Tesla.Env{status: 404}
 
   describe "list" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_translations() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_translations()} end)
     it do: expect Model.Translation.list(category_id: 1) |> to(be_struct ZenEx.Collection)
     it do: expect Model.Translation.list(category_id: 1).entities |> to(eq translations())
     it do: expect Model.Translation.list(section_id: 1).entities |> to(eq translations())
@@ -34,38 +35,38 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
   end
 
   describe "list_missing" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_locales() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_locales()} end)
     it do: expect Model.Translation.list_missing(category_id: 1) |> to(eq ["en-us", "ja"])
     it do: expect Model.Translation.list_missing(section_id: 1) |> to(eq ["en-us", "ja"])
     it do: expect Model.Translation.list_missing(article_id: 1) |> to(eq ["en-us", "ja"])
   end
 
   describe "show" do
-    before do: allow HTTPotion |> to(accept :get, fn(_, _) -> response_translation() end)
+    before do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_translation()} end)
     it do: expect Model.Translation.show("en-us", 1) |> to(eq translation())
   end
 
   describe "create" do
-    before do: allow HTTPotion |> to(accept :post, fn(_, _) -> response_translation() end)
+    before do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_translation()} end)
     it do: expect Model.Translation.create([category_id: 1], translation()) |> to(be_struct Translation)
     it do: expect Model.Translation.create([section_id: 1], translation()) |> to(be_struct Translation)
     it do: expect Model.Translation.create([article_id: 1], translation()) |> to(be_struct Translation)
   end
 
   describe "update" do
-    before do: allow HTTPotion |> to(accept :put, fn(_, _) -> response_translation() end)
+    before do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_translation()} end)
     it do: expect Model.Translation.update([category_id: 1], translation()) |> to(be_struct Translation)
     it do: expect Model.Translation.update([section_id: 1], translation()) |> to(be_struct Translation)
     it do: expect Model.Translation.update([article_id: 1], translation()) |> to(be_struct Translation)
   end
 
   describe "destroy" do
-    context "response status_code: 204" do
-      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_204() end)
+    context "response status: 204" do
+      before do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_204()} end)
       it do: expect Model.Translation.destroy(translation().id) |> to(eq :ok)
     end
-    context "response status_code: 404" do
-      before do: allow HTTPotion |> to(accept :delete, fn(_, _) -> response_404() end)
+    context "response status: 404" do
+      before do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_404()} end)
       it do: expect Model.Translation.destroy(translation().id) |> to(eq :error)
     end
   end
