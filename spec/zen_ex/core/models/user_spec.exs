@@ -2,7 +2,7 @@ defmodule ZenEx.Model.UserSpec do
   use ESpec
 
   import Tesla.Mock
-alias ZenEx.Entity.{User, JobStatus}
+  alias ZenEx.Entity.{User, JobStatus}
   alias ZenEx.Model
 
   let :json_users do
@@ -37,53 +37,95 @@ alias ZenEx.Entity.{User, JobStatus}
   let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
 
   describe "list" do
-    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_users()} end))
+    before(
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_users()} end)
+    )
+
     it(do: expect(Model.User.list() |> to(be_struct(ZenEx.Collection))))
     it(do: expect(Model.User.list().entities |> to(eq(users()))))
   end
 
   describe "show" do
-    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_user()} end))
+    before(
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+    )
+
     it(do: expect(Model.User.show(user().id) |> to(eq(user()))))
   end
 
   describe "create" do
-    before(do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end))
+    before(
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+    )
+
     it(do: expect(Model.User.create(user()) |> to(be_struct(User))))
   end
 
   describe "update" do
-    before(do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_user()} end))
+    before(
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+    )
+
     it(do: expect(Model.User.update(user()) |> to(be_struct(User))))
   end
 
   describe "create_or_update" do
-    before(do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end))
+    before(
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+    )
+
     it(do: expect(Model.User.create_or_update(user()) |> to(be_struct(User))))
   end
 
   describe "destroy" do
-    before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_user()} end))
+    before(
+      do:
+        mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+    )
+
     it(do: expect(Model.User.destroy(user().id) |> to(be_struct(User))))
   end
 
   describe "create_many" do
-    before(do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_job_status()} end))
+    before(
+      do:
+        mock(fn %{method: :post, url: _} ->
+          %Tesla.Env{status: 200, body: response_job_status()}
+        end)
+    )
+
     it(do: expect(Model.User.create_many(users()) |> to(be_struct(JobStatus))))
   end
 
   describe "update_many" do
-    before(do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_job_status()} end))
+    before(
+      do:
+        mock(fn %{method: :put, url: _} ->
+          %Tesla.Env{status: 200, body: response_job_status()}
+        end)
+    )
+
     it(do: expect(Model.User.update_many(users()) |> to(be_struct(JobStatus))))
   end
 
   describe "create_or_update_many" do
-    before(do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_job_status()} end))
+    before(
+      do:
+        mock(fn %{method: :post, url: _} ->
+          %Tesla.Env{status: 200, body: response_job_status()}
+        end)
+    )
+
     it(do: expect(Model.User.create_or_update_many(users()) |> to(be_struct(JobStatus))))
   end
 
   describe "destroy_many" do
-    before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_job_status()} end))
+    before(
+      do:
+        mock(fn %{method: :delete, url: _} ->
+          %Tesla.Env{status: 200, body: response_job_status()}
+        end)
+    )
 
     it(
       do: expect(Model.User.destroy_many(Enum.map(users(), & &1.id)) |> to(be_struct(JobStatus)))
@@ -91,7 +133,12 @@ alias ZenEx.Entity.{User, JobStatus}
   end
 
   describe "search" do
-    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_search_users()} end))
+    before(
+      do:
+        mock(fn %{method: :get, url: _} ->
+          %Tesla.Env{status: 200, body: response_search_users()}
+        end)
+    )
 
     context "when argument is a map" do
       it(
