@@ -1,5 +1,4 @@
 defmodule ZenEx do
-
   @moduledoc """
   Zendesk REST API Library
 
