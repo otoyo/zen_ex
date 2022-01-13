@@ -22,7 +22,6 @@ defmodule ZenEx.Model.JobStatus do
     |> HTTPClient.get(job_statuses: [JobStatus])
   end
 
-
   @doc """
   Show job_status specified by id.
 
@@ -37,7 +36,6 @@ defmodule ZenEx.Model.JobStatus do
     HTTPClient.get("/api/v2/job_statuses/#{id}.json", job_status: JobStatus)
   end
 
-
   @doc """
   Show multiple job_statuses specified by ids.
 
@@ -49,6 +47,8 @@ defmodule ZenEx.Model.JobStatus do
   """
   @spec show_many(list(binary)) :: %ZenEx.Collection{} | {:error, String.t()}
   def show_many(ids) when is_list(ids) do
-    HTTPClient.get("/api/v2/job_statuses/show_many.json#{Query.build(ids: ids)}", job_statuses: [JobStatus])
+    HTTPClient.get("/api/v2/job_statuses/show_many.json#{Query.build(ids: ids)}",
+      job_statuses: [JobStatus]
+    )
   end
 end

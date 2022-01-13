@@ -20,17 +20,17 @@ defmodule ZenEx.HelpCenter.Model.Section do
       %ZenEx.Collection{}
 
   """
-  @spec list(String.t) :: %ZenEx.Collection{}
+  @spec list(String.t()) :: %ZenEx.Collection{}
   def list(locale, category_id_or_opts \\ [], opts \\ []) when is_list(opts) do
     case category_id_or_opts do
       category_id when is_integer(category_id) ->
         "/api/v2/help_center/#{locale}/categories/#{category_id}/sections.json#{Query.build(opts)}"
+
       _ ->
         "/api/v2/help_center/#{locale}/sections.json#{Query.build(category_id_or_opts)}"
     end
     |> HTTPClient.get(sections: [Section])
   end
-
 
   @doc """
   Show section specified by bcp-47 code of locale (es-419, en-us, pr-br) and id.
@@ -41,11 +41,10 @@ defmodule ZenEx.HelpCenter.Model.Section do
       %ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: "en-us", ...}
 
   """
-  @spec show(String.t, integer) :: %Section{}
+  @spec show(String.t(), integer) :: %Section{}
   def show(locale, id) when is_integer(id) do
     HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{id}.json", section: Section)
   end
-
 
   @doc """
   Create section.
@@ -61,7 +60,6 @@ defmodule ZenEx.HelpCenter.Model.Section do
     HTTPClient.post("/api/v2/help_center/sections.json", %{section: section}, section: Section)
   end
 
-
   @doc """
   Update section specified by id.
 
@@ -73,9 +71,10 @@ defmodule ZenEx.HelpCenter.Model.Section do
   """
   @spec update(%Section{}) :: %Section{}
   def update(%Section{} = section) do
-    HTTPClient.put("/api/v2/help_center/sections/#{section.id}.json", %{section: section}, section: Section)
+    HTTPClient.put("/api/v2/help_center/sections/#{section.id}.json", %{section: section},
+      section: Section
+    )
   end
-
 
   @doc """
   Delete section specified by id.
@@ -90,7 +89,7 @@ defmodule ZenEx.HelpCenter.Model.Section do
   def destroy(id) when is_integer(id) do
     case HTTPClient.delete("/api/v2/help_center/sections/#{id}.json").status do
       204 -> :ok
-      _   -> :error
+      _ -> :error
     end
   end
 end

@@ -22,7 +22,6 @@ defmodule ZenEx.HelpCenter.Model.Category do
     |> HTTPClient.get(categories: [Category])
   end
 
-
   @doc """
   Show category specified by bcp-47 code of locale (es-419, en-us, pr-br) and id.
 
@@ -32,11 +31,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
       %ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: "en-us", ...}
 
   """
-  @spec show(String.t, integer) :: %Category{}
+  @spec show(String.t(), integer) :: %Category{}
   def show(locale, id) when is_integer(id) do
     HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{id}.json", category: Category)
   end
-
 
   @doc """
   Create category.
@@ -49,9 +47,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   """
   @spec create(%Category{}) :: %Category{}
   def create(%Category{} = category) do
-    HTTPClient.post("/api/v2/help_center/categories.json", %{category: category}, category: Category)
+    HTTPClient.post("/api/v2/help_center/categories.json", %{category: category},
+      category: Category
+    )
   end
-
 
   @doc """
   Update category specified by id.
@@ -64,9 +63,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   """
   @spec update(%Category{}) :: %Category{}
   def update(%Category{} = category) do
-    HTTPClient.put("/api/v2/help_center/categories/#{category.id}.json", %{category: category}, category: Category)
+    HTTPClient.put("/api/v2/help_center/categories/#{category.id}.json", %{category: category},
+      category: Category
+    )
   end
-
 
   @doc """
   Delete category specified by id.
@@ -81,7 +81,7 @@ defmodule ZenEx.HelpCenter.Model.Category do
   def destroy(id) when is_integer(id) do
     case HTTPClient.delete("/api/v2/help_center/categories/#{id}.json").status do
       204 -> :ok
-      _   -> :error
+      _ -> :error
     end
   end
 end

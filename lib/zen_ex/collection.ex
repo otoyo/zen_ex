@@ -1,5 +1,4 @@
 defmodule ZenEx.Collection do
-
   @moduledoc """
   Colletion for multiple entities and pagination
   """
@@ -7,7 +6,7 @@ defmodule ZenEx.Collection do
   alias ZenEx.{HTTPClient, Collection}
 
   @derive Jason.Encoder
-defstruct [:entities, :count, :next_page, :previous_page, :decode_as]
+  defstruct [:entities, :count, :next_page, :previous_page, :decode_as]
 
   @doc """
   Get next page.
@@ -21,7 +20,6 @@ defstruct [:entities, :count, :next_page, :previous_page, :decode_as]
   """
   @spec next(%Collection{}) :: %ZenEx.Collection{}
   def next(%Collection{next_page: url, decode_as: as}), do: HTTPClient.get(url, as)
-
 
   @doc """
   Get previous page.
