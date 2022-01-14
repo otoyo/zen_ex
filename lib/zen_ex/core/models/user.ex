@@ -23,7 +23,6 @@ defmodule ZenEx.Model.User do
     |> HTTPClient.get(users: [User])
   end
 
-
   @doc """
   Show user specified by id.
 
@@ -37,7 +36,6 @@ defmodule ZenEx.Model.User do
   def show(id) when is_integer(id) do
     HTTPClient.get("/api/v2/users/#{id}.json", user: User)
   end
-
 
   @doc """
   Create user.
@@ -53,7 +51,6 @@ defmodule ZenEx.Model.User do
     HTTPClient.post("/api/v2/users.json", %{user: user}, user: User)
   end
 
-
   @doc """
   Update user specified by id.
 
@@ -67,7 +64,6 @@ defmodule ZenEx.Model.User do
   def update(%User{} = user) do
     HTTPClient.put("/api/v2/users/#{user.id}.json", %{user: user}, user: User)
   end
-
 
   @doc """
   Create or update user specified by id.
@@ -83,7 +79,6 @@ defmodule ZenEx.Model.User do
     HTTPClient.post("/api/v2/users/create_or_update.json", %{user: user}, user: User)
   end
 
-
   @doc """
   Delete (deactivate) user specified by id.
 
@@ -97,7 +92,6 @@ defmodule ZenEx.Model.User do
   def destroy(id) when is_integer(id) do
     HTTPClient.delete("/api/v2/users/#{id}.json", user: User)
   end
-
 
   @doc """
   Create multiple users.
@@ -113,7 +107,6 @@ defmodule ZenEx.Model.User do
     HTTPClient.post("/api/v2/users/create_many.json", %{users: users}, job_status: JobStatus)
   end
 
-
   @doc """
   Update multiple users specified by id.
 
@@ -128,7 +121,6 @@ defmodule ZenEx.Model.User do
     HTTPClient.put("/api/v2/users/update_many.json", %{users: users}, job_status: JobStatus)
   end
 
-
   @doc """
   Create or update multiple users specified by id.
 
@@ -140,9 +132,10 @@ defmodule ZenEx.Model.User do
   """
   @spec create_or_update_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
   def create_or_update_many(users) when is_list(users) do
-    HTTPClient.post("/api/v2/users/create_or_update_many.json", %{users: users}, job_status: JobStatus)
+    HTTPClient.post("/api/v2/users/create_or_update_many.json", %{users: users},
+      job_status: JobStatus
+    )
   end
-
 
   @doc """
   Delete (deactivate) multiple users specified by id.
@@ -155,7 +148,9 @@ defmodule ZenEx.Model.User do
   """
   @spec destroy_many(list(integer)) :: %JobStatus{} | {:error, String.t()}
   def destroy_many(ids) when is_list(ids) do
-    HTTPClient.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}", job_status: JobStatus)
+    HTTPClient.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}",
+      job_status: JobStatus
+    )
   end
 
   @doc """
