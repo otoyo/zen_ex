@@ -1,4 +1,4 @@
-# zen\_ex [![Build Status](https://travis-ci.org/otoyo/zen_ex.svg?branch=master)](https://travis-ci.org/otoyo/zen_ex)
+# zen\_ex
 
 [Zendesk REST API](https://developer.zendesk.com/rest_api) client for Elixir
 
