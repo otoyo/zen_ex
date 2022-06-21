@@ -17,6 +17,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   let(:json_user, do: ~s({"user":{"id":223443,"name":"Johnny Agent"}}))
+  let(:json_deleted_user, do: ~s({"deleted_user":{"id":223443,"name":"Johnny Agent"}}))
   let(:user, do: struct(User, %{id: 223_443, name: "Johnny Agent"}))
 
   let :json_job_status do
@@ -32,6 +33,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   let(:response_user, do: %Tesla.Env{body: json_user()})
+  let(:response_deleted_user, do: %Tesla.Env{body: json_deleted_user()})
   let(:response_users, do: %Tesla.Env{body: json_users()})
   let(:response_search_users, do: %Tesla.Env{body: json_search_users()})
   let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
@@ -84,6 +86,17 @@ defmodule ZenEx.Model.UserSpec do
     )
 
     it(do: expect(Model.User.destroy(user().id) |> to(be_struct(User))))
+  end
+
+  describe "permanently_destroy" do
+    before(
+      do:
+        mock(fn %{method: :delete, url: _} ->
+          %Tesla.Env{status: 200, body: response_deleted_user()}
+        end)
+    )
+
+    it(do: expect(Model.User.permanently_destroy(user().id) |> to(be_struct(User))))
   end
 
   describe "create_many" do

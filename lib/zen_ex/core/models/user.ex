@@ -94,6 +94,20 @@ defmodule ZenEx.Model.User do
   end
 
   @doc """
+  Permanently delete deactivated user specified by id.
+
+  ## Examples
+
+      iex> ZenEx.Model.User.permanently_destroy(1)
+      %ZenEx.Entity.User{id: 1, name: "xxx", active: false, ...}
+
+  """
+  @spec permanently_destroy(integer) :: %User{} | {:error, String.t()}
+  def permanently_destroy(id) when is_integer(id) do
+    HTTPClient.delete("/api/v2/deleted_users/#{id}.json", deleted_user: User)
+  end
+
+  @doc """
   Create multiple users.
 
   ## Examples
