@@ -3,17 +3,18 @@ defmodule ZenEx.HTTPClient do
 
   alias ZenEx.Collection
 
-  def auth_conn(opts \\ %{}) do
-    Tesla.client([
-      {Tesla.Middleware.JSON, [engine: Jason]},
-      {Tesla.Middleware.BasicAuth,
-       Map.merge(%{username: "#{get_env(:user)}/token", password: "#{get_env(:api_token)}"}, opts)},
-      Tesla.Middleware.Compression
-    ])
+  def auth_conn(middlewares \\ []) do
+    Tesla.client(
+      [
+        {Tesla.Middleware.JSON, [engine: Jason]},
+        {Tesla.Middleware.BasicAuth,
+         %{username: "#{get_env(:user)}/token", password: "#{get_env(:api_token)}"}}
+      ] ++ middlewares
+    )
   end
 
   def get("https://" <> _ = url) do
-    with {:ok, result} <- Tesla.get(auth_conn(), url) do
+    with {:ok, result} <- Tesla.get(auth_conn([Tesla.Middleware.Compression]), url) do
       result.body
     end
   end
