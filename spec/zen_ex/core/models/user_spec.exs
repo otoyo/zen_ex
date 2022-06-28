@@ -42,9 +42,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   describe "show" do
-    before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
-    )
+    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
 
     it(do: expect(Model.User.show(user().id) |> to(eq(user()))))
   end
@@ -58,9 +56,7 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   describe "update" do
-    before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
-    )
+    before(do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
 
     it(do: expect(Model.User.update(user()) |> to(be_struct(User))))
   end
@@ -75,8 +71,7 @@ defmodule ZenEx.Model.UserSpec do
 
   describe "destroy" do
     before(
-      do:
-        mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
+      do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
     )
 
     it(do: expect(Model.User.destroy(user().id) |> to(be_struct(User))))

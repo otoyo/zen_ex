@@ -64,8 +64,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
 
   describe "list_missing" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_locales()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_locales()} end)
     )
 
     it(do: expect(Model.Translation.list_missing(category_id: 1) |> to(eq(["en-us", "ja"]))))
@@ -152,19 +151,13 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(do: expect(Model.Translation.destroy(translation().id) |> to(eq(:ok))))
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(do: expect(Model.Translation.destroy(translation().id) |> to(eq(:error))))
     end

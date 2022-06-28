@@ -94,19 +94,13 @@ defmodule ZenEx.Model.DynamicContentSpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(do: expect(Model.DynamicContent.destroy(dynamic_content().id) |> to(eq(:ok))))
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(do: expect(Model.DynamicContent.destroy(dynamic_content().id) |> to(eq(:error))))
     end

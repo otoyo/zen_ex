@@ -38,8 +38,7 @@ defmodule ZenEx.HelpCenter.Model.CategorySpec do
 
   describe "show" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
     )
 
     it(do: expect(Model.Category.show("en-us", category().id) |> to(eq(category()))))
@@ -47,8 +46,7 @@ defmodule ZenEx.HelpCenter.Model.CategorySpec do
 
   describe "create" do
     before(
-      do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
     )
 
     it(do: expect(Model.Category.create(category()) |> to(be_struct(Category))))
@@ -56,8 +54,7 @@ defmodule ZenEx.HelpCenter.Model.CategorySpec do
 
   describe "update" do
     before(
-      do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_category()} end)
     )
 
     it(do: expect(Model.Category.update(category()) |> to(be_struct(Category))))
@@ -65,19 +62,13 @@ defmodule ZenEx.HelpCenter.Model.CategorySpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(do: expect(Model.Category.destroy(category().id) |> to(eq(:ok))))
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(do: expect(Model.Category.destroy(category().id) |> to(eq(:error))))
     end

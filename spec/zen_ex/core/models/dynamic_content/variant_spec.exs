@@ -35,8 +35,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
 
   describe "list" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variants()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variants()} end)
     )
 
     it(
@@ -58,8 +57,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
 
   describe "show" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -73,8 +71,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
 
   describe "create" do
     before(
-      do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -105,8 +102,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
 
   describe "update" do
     before(
-      do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -137,10 +133,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(
         do:
@@ -152,10 +145,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(
         do:

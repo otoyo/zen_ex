@@ -51,8 +51,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "list" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_articles()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_articles()} end)
     )
 
     it(do: expect(Model.Article.list("en-us") |> to(be_struct(ZenEx.Collection))))
@@ -62,8 +61,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "show" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.show("en-us", article().id) |> to(eq(article()))))
@@ -71,8 +69,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "create" do
     before(
-      do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.create(article()) |> to(be_struct(Article))))
@@ -80,8 +77,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "update" do
     before(
-      do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.update(article()) |> to(be_struct(Article))))
@@ -89,19 +85,13 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(do: expect(Model.Article.destroy(article().id) |> to(eq(:ok))))
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(do: expect(Model.Article.destroy(article().id) |> to(eq(:error))))
     end
@@ -109,8 +99,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "search" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_results()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_results()} end)
     )
 
     it(
