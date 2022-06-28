@@ -31,17 +31,10 @@ defmodule ZenEx.Model.TicketSpec do
     ~s({"count":2,"results":[{"id":35436,"subject":"Help I need somebody!"},{"id":20057623,"subject":"Not just anybody!"}]})
   end
 
-  let(:response_ticket, do: %Tesla.Env{body: json_ticket()})
-  let(:response_tickets, do: %Tesla.Env{body: json_tickets()})
-  let(:response_search_tickets, do: %Tesla.Env{body: json_search_tickets()})
-  let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
-  let(:response_204, do: %Tesla.Env{status: 204})
-  let(:response_404, do: %Tesla.Env{status: 404})
-
   describe "list" do
     before(
       do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_tickets()} end)
+        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_tickets()} end)
     )
 
     it(do: expect(Model.Ticket.list() |> to(be_struct(ZenEx.Collection))))
@@ -50,7 +43,7 @@ defmodule ZenEx.Model.TicketSpec do
 
   describe "show" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_ticket()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
     )
 
     it(do: expect(Model.Ticket.show(ticket().id) |> to(eq(ticket()))))
@@ -59,7 +52,7 @@ defmodule ZenEx.Model.TicketSpec do
   describe "create" do
     before(
       do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_ticket()} end)
+        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
     )
 
     it(do: expect(Model.Ticket.create(ticket()) |> to(be_struct(Ticket))))
@@ -67,7 +60,7 @@ defmodule ZenEx.Model.TicketSpec do
 
   describe "update" do
     before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_ticket()} end)
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
     )
 
     it(do: expect(Model.Ticket.update(ticket()) |> to(be_struct(Ticket))))
@@ -77,7 +70,7 @@ defmodule ZenEx.Model.TicketSpec do
     context "response status: 204" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_204()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
       )
 
       it(do: expect(Model.Ticket.destroy(ticket().id) |> to(eq(:ok))))
@@ -86,7 +79,7 @@ defmodule ZenEx.Model.TicketSpec do
     context "response status: 404" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_404()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
       )
 
       it(do: expect(Model.Ticket.destroy(ticket().id) |> to(eq(:error))))
@@ -97,7 +90,7 @@ defmodule ZenEx.Model.TicketSpec do
     before(
       do:
         mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -108,7 +101,7 @@ defmodule ZenEx.Model.TicketSpec do
     before(
       do:
         mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -119,7 +112,7 @@ defmodule ZenEx.Model.TicketSpec do
     before(
       do:
         mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -136,7 +129,7 @@ defmodule ZenEx.Model.TicketSpec do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_search_tickets()}
+          %Tesla.Env{status: 200, body: json_search_tickets()}
         end)
     )
 

@@ -33,16 +33,10 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     struct(DynamicContent, %{id: 112_233, name: "mail-address", default_locale_id: 1})
   end
 
-  let(:response_variant, do: %Tesla.Env{body: json_variant()})
-  let(:response_variants, do: %Tesla.Env{body: json_variants()})
-  let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
-  let(:response_204, do: %Tesla.Env{status: 204})
-  let(:response_404, do: %Tesla.Env{status: 404})
-
   describe "list" do
     before(
       do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_variants()} end)
+        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variants()} end)
     )
 
     it(
@@ -65,7 +59,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
   describe "show" do
     before(
       do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_variant()} end)
+        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -80,7 +74,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
   describe "create" do
     before(
       do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_variant()} end)
+        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -96,7 +90,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     before(
       do:
         mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -112,7 +106,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
   describe "update" do
     before(
       do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_variant()} end)
+        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
     )
 
     it(
@@ -128,7 +122,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     before(
       do:
         mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -145,7 +139,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     context "response status: 204" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_204()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
       )
 
       it(
@@ -160,7 +154,7 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     context "response status: 404" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_404()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
       )
 
       it(

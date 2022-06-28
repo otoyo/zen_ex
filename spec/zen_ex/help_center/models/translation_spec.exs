@@ -48,17 +48,11 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     ~s({"locales":["en-us","ja"]})
   end
 
-  let(:response_translation, do: %Tesla.Env{body: json_translation()})
-  let(:response_translations, do: %Tesla.Env{body: json_translations()})
-  let(:response_locales, do: %Tesla.Env{body: json_locales()})
-  let(:response_204, do: %Tesla.Env{status: 204})
-  let(:response_404, do: %Tesla.Env{status: 404})
-
   describe "list" do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_translations()}
+          %Tesla.Env{status: 200, body: json_translations()}
         end)
     )
 
@@ -71,7 +65,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
   describe "list_missing" do
     before(
       do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_locales()} end)
+        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_locales()} end)
     )
 
     it(do: expect(Model.Translation.list_missing(category_id: 1) |> to(eq(["en-us", "ja"]))))
@@ -83,7 +77,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_translation()}
+          %Tesla.Env{status: 200, body: json_translation()}
         end)
     )
 
@@ -94,7 +88,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     before(
       do:
         mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: response_translation()}
+          %Tesla.Env{status: 200, body: json_translation()}
         end)
     )
 
@@ -127,7 +121,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     before(
       do:
         mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: response_translation()}
+          %Tesla.Env{status: 200, body: json_translation()}
         end)
     )
 
@@ -160,7 +154,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     context "response status: 204" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_204()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end)
       )
 
       it(do: expect(Model.Translation.destroy(translation().id) |> to(eq(:ok))))
@@ -169,7 +163,7 @@ defmodule ZenEx.HelpCenter.Model.TranslationSpec do
     context "response status: 404" do
       before(
         do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_404()} end)
+          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end)
       )
 
       it(do: expect(Model.Translation.destroy(translation().id) |> to(eq(:error))))
