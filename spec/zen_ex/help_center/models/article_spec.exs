@@ -49,16 +49,9 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
     ~s({"results":[{"id":35436,"name":"Help I need somebody!","locale":"en-us","section_id":112233},{"id":20057623,"name":"Not just anybody!","locale":"en-us","section_id":112233}]})
   end
 
-  let(:response_article, do: %Tesla.Env{body: json_article()})
-  let(:response_articles, do: %Tesla.Env{body: json_articles()})
-  let(:response_results, do: %Tesla.Env{body: json_results()})
-  let(:response_204, do: %Tesla.Env{status: 204})
-  let(:response_404, do: %Tesla.Env{status: 404})
-
   describe "list" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_articles()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_articles()} end)
     )
 
     it(do: expect(Model.Article.list("en-us") |> to(be_struct(ZenEx.Collection))))
@@ -68,8 +61,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "show" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_article()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.show("en-us", article().id) |> to(eq(article()))))
@@ -77,8 +69,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "create" do
     before(
-      do:
-        mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_article()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.create(article()) |> to(be_struct(Article))))
@@ -86,8 +77,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "update" do
     before(
-      do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_article()} end)
+      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_article()} end)
     )
 
     it(do: expect(Model.Article.update(article()) |> to(be_struct(Article))))
@@ -95,19 +85,13 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "destroy" do
     context "response status: 204" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_204()} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
 
       it(do: expect(Model.Article.destroy(article().id) |> to(eq(:ok))))
     end
 
     context "response status: 404" do
-      before(
-        do:
-          mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_404()} end)
-      )
+      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
 
       it(do: expect(Model.Article.destroy(article().id) |> to(eq(:error))))
     end
@@ -115,8 +99,7 @@ defmodule ZenEx.HelpCenter.Model.ArticleSpec do
 
   describe "search" do
     before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_results()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_results()} end)
     )
 
     it(

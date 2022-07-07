@@ -32,15 +32,9 @@ defmodule ZenEx.Model.UserSpec do
     ~s({"count":2,"users":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
   end
 
-  let(:response_user, do: %Tesla.Env{body: json_user()})
-  let(:response_deleted_user, do: %Tesla.Env{body: json_deleted_user()})
-  let(:response_users, do: %Tesla.Env{body: json_users()})
-  let(:response_search_users, do: %Tesla.Env{body: json_search_users()})
-  let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
-
   describe "list" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_users()} end)
+      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_users()} end)
     )
 
     it(do: expect(Model.User.list() |> to(be_struct(ZenEx.Collection))))
@@ -48,32 +42,28 @@ defmodule ZenEx.Model.UserSpec do
   end
 
   describe "show" do
-    before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
-    )
+    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
 
     it(do: expect(Model.User.show(user().id) |> to(eq(user()))))
   end
 
   describe "create" do
     before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
     )
 
     it(do: expect(Model.User.create(user()) |> to(be_struct(User))))
   end
 
   describe "update" do
-    before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
-    )
+    before(do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
 
     it(do: expect(Model.User.update(user()) |> to(be_struct(User))))
   end
 
   describe "create_or_update" do
     before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
     )
 
     it(do: expect(Model.User.create_or_update(user()) |> to(be_struct(User))))
@@ -81,8 +71,7 @@ defmodule ZenEx.Model.UserSpec do
 
   describe "destroy" do
     before(
-      do:
-        mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: response_user()} end)
+      do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
     )
 
     it(do: expect(Model.User.destroy(user().id) |> to(be_struct(User))))
@@ -92,7 +81,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: response_deleted_user()}
+          %Tesla.Env{status: 200, body: json_deleted_user()}
         end)
     )
 
@@ -103,7 +92,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -114,7 +103,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -125,7 +114,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -136,7 +125,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -149,7 +138,7 @@ defmodule ZenEx.Model.UserSpec do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_search_users()}
+          %Tesla.Env{status: 200, body: json_search_users()}
         end)
     )
 

@@ -42,14 +42,11 @@ defmodule ZenEx.Model.JobStatusSpec do
     })
   end
 
-  let(:response_job_status, do: %Tesla.Env{body: json_job_status()})
-  let(:response_job_statuses, do: %Tesla.Env{body: json_job_statuses()})
-
   describe "list" do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_statuses()}
+          %Tesla.Env{status: 200, body: json_job_statuses()}
         end)
     )
 
@@ -61,7 +58,7 @@ defmodule ZenEx.Model.JobStatusSpec do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_status()}
+          %Tesla.Env{status: 200, body: json_job_status()}
         end)
     )
 
@@ -72,7 +69,7 @@ defmodule ZenEx.Model.JobStatusSpec do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: response_job_statuses()}
+          %Tesla.Env{status: 200, body: json_job_statuses()}
         end)
     )
 
