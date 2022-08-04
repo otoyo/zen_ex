@@ -1,8 +1,8 @@
-# zen\_ex
+# zen_ex
 
 [Zendesk REST API](https://developer.zendesk.com/rest_api) client for Elixir
 
-zen\_ex is composed of Models and Entities. See [Usage](#usage).
+zen_ex is composed of Models and Entities. See [Usage](#usage).
 
 ## Installation
 
@@ -58,12 +58,14 @@ ticket = ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{subject: "My printer is 
 See also under ZenEx.Model.
 
 ## Supporting multiple Zendesk configs
+
 You may need to interact with more than one instance of Zendesk. In order to facilitate that there is a small override
 that can be put into the Process dictionary that will tell it to look for config settings keyed against a class name.
 
 For example:
 
 config/config.exs
+
 ```
 config :zen_ex,
   subdomain: System.get_env("ZENDESK_SUBDOMAIN"),
@@ -109,6 +111,15 @@ default `zen_ex` config settings.
   - `create_or_update_many`
   - `destroy_many`
   - `search`
+- User Identities
+  - `list`
+  - `show`
+  - `create`
+  - `update`
+  - `make_primary`
+  - `verify`
+  - `request_user_verification`
+  - `delete`
 - Tickets
   - `list`
   - `show`
