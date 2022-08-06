@@ -46,6 +46,12 @@ defmodule ZenEx.HTTPClient do
     end
   end
 
+  def put(endpoint, %{} = param) do
+    with {:ok, response} <- Tesla.put(auth_conn(), build_url(endpoint), param) do
+      response
+    end
+  end
+
   def delete(endpoint, decode_as), do: delete(endpoint) |> _build_entity(decode_as)
 
   def delete(endpoint) do
