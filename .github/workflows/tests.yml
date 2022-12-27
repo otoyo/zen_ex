@@ -20,7 +20,7 @@ jobs:
           skip_after_successful_duplicate: "true"
           paths_ignore: '["**/README.md", "**/docs/**"]'
           do_not_skip: '["workflow_dispatch", "schedule", "push"]'
-  
+
   tests-backend:
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     needs: pre_job
@@ -30,7 +30,7 @@ jobs:
     name: Mix Tests
     strategy:
       matrix:
-        elixir: ["1.12", "1.13"]
+        elixir: ["1.12", "1.13", "1.14"]
         otp: ["24"]
     runs-on: ubuntu-latest
 
