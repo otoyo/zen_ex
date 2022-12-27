@@ -30,7 +30,7 @@ jobs:
     name: Mix Tests
     strategy:
       matrix:
-        elixir: ["1.12", "1.13"]
+        elixir: ["1.12", "1.13", "1.14"]
         otp: ["24"]
     runs-on: ubuntu-latest
 
