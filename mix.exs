@@ -46,15 +46,15 @@ defmodule ZenEx.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
       {:earmark, "~> 1.4.3", only: :dev, runtime: false},
-      {:espec, "~> 1.8.3", only: :test},
-      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
-      {:poison, "~> 3.0"},
-      {:tesla, "~> 1.4.0"},
-      {:hackney, "~> 1.10"},
-      {:jason, ">= 1.0.0"}
+      {:espec, "~> 1.9", only: :test},
+      {:ex_doc, "~> 0.29.1", only: :dev, runtime: false},
+      {:poison, "~> 5.0"},
+      {:tesla, "~> 1.5"},
+      {:hackney, "~> 1.18"},
+      {:jason, "~> 1.4"}
     ]
   end
 end
