@@ -45,51 +45,107 @@ defmodule ZenEx.HelpCenter.Model.SectionSpec do
       })
   )
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_sections()} end)
+      do:
+        mock(fn %{method: :get, url: _} ->
+          {:ok, %Tesla.Env{status: 200, body: json_sections()}}
+        end)
     )
 
-    it(do: expect(Model.Section.list("en-us") |> to(be_struct(ZenEx.Collection))))
-    it(do: expect(Model.Section.list("en-us").entities |> to(eq(sections()))))
-    it(do: expect(Model.Section.list("en-us", category().id).entities |> to(eq(sections()))))
+    it(do: expect({:ok, %ZenEx.Collection{}} = Model.Section.list("en-us")))
   end
 
   describe "show" do
-    before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_section()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_section()}}
+          end)
+      )
 
-    it(do: expect(Model.Section.show("en-us", section().id) |> to(eq(section()))))
+      it(do: expect({:ok, %Section{}} = Model.Section.show("en-us", section().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Section.show("en-us", section().id)))
+    end
   end
 
   describe "create" do
-    before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_section()} end)
-    )
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 201, body: json_section()}}
+          end)
+      )
 
-    it(do: expect(Model.Section.create(section()) |> to(be_struct(Section))))
+      it(do: expect({:ok, %Section{}} = Model.Section.create(section())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Section.create(section())))
+    end
   end
 
   describe "update" do
-    before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_section()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_section()}}
+          end)
+      )
 
-    it(do: expect(Model.Section.update(section()) |> to(be_struct(Section))))
+      it(do: expect({:ok, %Section{}} = Model.Section.update(section())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Section.update(section())))
+    end
   end
 
   describe "destroy" do
     context "response status: 204" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
+      before(do: mock(fn %{method: :delete, url: _} -> {:ok, %Tesla.Env{status: 204}} end))
 
-      it(do: expect(Model.Section.destroy(section().id) |> to(eq(:ok))))
+      it(do: expect(:ok = Model.Section.destroy(section().id)))
     end
 
     context "response status: 404" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
 
-      it(do: expect(Model.Section.destroy(section().id) |> to(eq(:error))))
+      it(do: expect({:error, _} = Model.Section.destroy(section().id)))
     end
   end
 end

@@ -13,16 +13,24 @@ defmodule ZenEx.Model.DynamicContent do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.list
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list :: %ZenEx.Collection{}
+  @spec list :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(opts \\ []) when is_list(opts) do
-    "/api/v2/dynamic_content/items.json#{Query.build(opts)}"
-    |> HTTPClient.get(items: [DynamicContent])
-    |> Map.update(:entities, [], fn dynamic_contents ->
-      Enum.map(dynamic_contents, &_build_variants/1)
-    end)
+    with {:ok, collection} <-
+           HTTPClient.get("/api/v2/dynamic_content/items.json#{Query.build(opts)}",
+             items: [DynamicContent]
+           ) do
+      collection_with_variants =
+        Map.update(collection, :entities, [], fn dynamic_contents ->
+          Enum.map(dynamic_contents, &_build_variants/1)
+        end)
+
+      {:ok, collection_with_variants}
+    else
+      {:error, err} -> {:error, err}
+    end
   end
 
   @doc """
@@ -31,13 +39,16 @@ defmodule ZenEx.Model.DynamicContent do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.show(xxx)
-      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...}
+      {:ok, %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...}}
 
   """
-  @spec show(integer) :: %DynamicContent{}
+  @spec show(integer) :: {:ok, %DynamicContent{}} | {:error, any()}
   def show(id) when is_integer(id) do
     HTTPClient.get("/api/v2/dynamic_content/items/#{id}.json", item: DynamicContent)
-    |> _build_variants
+    |> case do
+      {:ok, dynamic_content} -> {:ok, _build_variants(dynamic_content)}
+      {:error, response} -> {:error, response}
+    end
   end
 
   @doc """
@@ -46,15 +57,18 @@ defmodule ZenEx.Model.DynamicContent do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.create(%ZenEx.Entity.DynamicContent{default_locale_id: xxx, variants: [%ZenEx.Entity.DynamicContent.Variant{...}, ...], ...})
-      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
+      {:ok, %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}}
 
   """
-  @spec create(%DynamicContent{}) :: %DynamicContent{}
+  @spec create(%DynamicContent{}) :: {:ok, %DynamicContent{}} | {:error, any()}
   def create(%DynamicContent{} = dynamic_content) do
     HTTPClient.post("/api/v2/dynamic_content/items.json", %{item: dynamic_content},
       item: DynamicContent
     )
-    |> _build_variants
+    |> case do
+      {:ok, dynamic_content} -> {:ok, _build_variants(dynamic_content)}
+      {:error, response} -> {:error, response}
+    end
   end
 
   @doc """
@@ -64,17 +78,20 @@ defmodule ZenEx.Model.DynamicContent do
   ## Examples
 
       iex> ZenEx.Model.DynamicContent.update(%ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...})
-      %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}
+      {:ok, %ZenEx.Entity.DynamicContent{id: xxx, default_locale_id: xxx, ...}}
 
   """
-  @spec update(%DynamicContent{}) :: %DynamicContent{}
+  @spec update(%DynamicContent{}) :: {:ok, %DynamicContent{}} | {:error, any()}
   def update(%DynamicContent{} = dynamic_content) do
     HTTPClient.put(
       "/api/v2/dynamic_content/items/#{dynamic_content.id}.json",
       %{item: dynamic_content},
       item: DynamicContent
     )
-    |> _build_variants
+    |> case do
+      {:ok, dynamic_content} -> {:ok, _build_variants(dynamic_content)}
+      {:error, response} -> {:error, response}
+    end
   end
 
   @doc """
@@ -86,11 +103,12 @@ defmodule ZenEx.Model.DynamicContent do
       :ok
 
   """
-  @spec destroy(integer) :: :ok | :error
+  @spec destroy(integer) :: :ok | {:error, any()}
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/dynamic_content/items/#{id}.json").status do
-      204 -> :ok
-      _ -> :error
+    HTTPClient.delete("/api/v2/dynamic_content/items/#{id}.json")
+    |> case do
+      {:ok, _} -> :ok
+      {:error, response} -> {:error, response}
     end
   end
 

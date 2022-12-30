@@ -14,13 +14,13 @@ defmodule ZenEx.HelpCenter.Model.Section do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Section.list("en-us")
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
       iex> ZenEx.HelpCenter.Model.Section.list("en-us", 1)
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list(String.t()) :: %ZenEx.Collection{}
+  @spec list(String.t()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(locale, category_id_or_opts \\ [], opts \\ []) when is_list(opts) do
     case category_id_or_opts do
       category_id when is_integer(category_id) ->
@@ -38,10 +38,10 @@ defmodule ZenEx.HelpCenter.Model.Section do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Section.show("en-us", 1)
-      %ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: "en-us", ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: "en-us", ...}}
 
   """
-  @spec show(String.t(), integer) :: %Section{}
+  @spec show(String.t(), integer) :: {:ok, %Section{}} | {:error, any()}
   def show(locale, id) when is_integer(id) do
     HTTPClient.get("/api/v2/help_center/#{locale}/sections/#{id}.json", section: Section)
   end
@@ -52,10 +52,10 @@ defmodule ZenEx.HelpCenter.Model.Section do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Section.create(%ZenEx.HelpCenter.Entity.Section{name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Section{name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Section{name: xxx, locale: xxx, ...}}
 
   """
-  @spec create(%Section{}) :: %Section{}
+  @spec create(%Section{}) :: {:ok, %Section{}} | {:error, any()}
   def create(%Section{} = section) do
     HTTPClient.post("/api/v2/help_center/sections.json", %{section: section}, section: Section)
   end
@@ -66,10 +66,10 @@ defmodule ZenEx.HelpCenter.Model.Section do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Section.update(%ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Section{id: 1, name: xxx, locale: xxx, ...}}
 
   """
-  @spec update(%Section{}) :: %Section{}
+  @spec update(%Section{}) :: {:ok, %Section{}} | {:error, any()}
   def update(%Section{} = section) do
     HTTPClient.put("/api/v2/help_center/sections/#{section.id}.json", %{section: section},
       section: Section
@@ -85,11 +85,12 @@ defmodule ZenEx.HelpCenter.Model.Section do
       :ok
 
   """
-  @spec destroy(integer) :: :ok | :error
+  @spec destroy(integer) :: :ok | {:error, any()}
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/help_center/sections/#{id}.json").status do
-      204 -> :ok
-      _ -> :error
+    HTTPClient.delete("/api/v2/help_center/sections/#{id}.json")
+    |> case do
+      {:ok, _} -> :ok
+      {:error, response} -> {:error, response}
     end
   end
 end

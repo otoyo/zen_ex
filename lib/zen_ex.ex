@@ -5,7 +5,7 @@ defmodule ZenEx do
   ## Examples
 
       iex> ZenEx.Model.Ticket.list
-      [%ZenEx.Entity.Ticket{id: xxx, title: "xxx", ...}, ...]
+      {:ok, [%ZenEx.Entity.Ticket{id: xxx, title: "xxx", ...}, ...]}
 
   See under ZenEx.Model and ZenEx.Entity.
   """

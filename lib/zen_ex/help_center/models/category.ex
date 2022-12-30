@@ -13,10 +13,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Category.list("en-us")
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list(keyword()) :: %ZenEx.Collection{}
+  @spec list(keyword()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(locale, opts \\ []) when is_list(opts) do
     "/api/v2/help_center/#{locale}/categories.json#{Query.build(opts)}"
     |> HTTPClient.get(categories: [Category])
@@ -28,10 +28,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Category.show("en-us", 1)
-      %ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: "en-us", ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: "en-us", ...}}
 
   """
-  @spec show(String.t(), integer) :: %Category{}
+  @spec show(String.t(), integer) :: {:ok, %Category{}} | {:error, any()}
   def show(locale, id) when is_integer(id) do
     HTTPClient.get("/api/v2/help_center/#{locale}/categories/#{id}.json", category: Category)
   end
@@ -42,10 +42,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Category.create(%ZenEx.HelpCenter.Entity.Category{name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Category{name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Category{name: xxx, locale: xxx, ...}}
 
   """
-  @spec create(%Category{}) :: %Category{}
+  @spec create(%Category{}) :: {:ok, %Category{}} | {:error, any()}
   def create(%Category{} = category) do
     HTTPClient.post("/api/v2/help_center/categories.json", %{category: category},
       category: Category
@@ -58,10 +58,10 @@ defmodule ZenEx.HelpCenter.Model.Category do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Category.update(%ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Category{id: 1, name: xxx, locale: xxx, ...}}
 
   """
-  @spec update(%Category{}) :: %Category{}
+  @spec update(%Category{}) :: {:ok, %Category{}} | {:error, any()}
   def update(%Category{} = category) do
     HTTPClient.put("/api/v2/help_center/categories/#{category.id}.json", %{category: category},
       category: Category
@@ -77,11 +77,12 @@ defmodule ZenEx.HelpCenter.Model.Category do
       :ok
 
   """
-  @spec destroy(integer) :: :ok | :error
+  @spec destroy(integer) :: :ok | {:error, any()}
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/help_center/categories/#{id}.json").status do
-      204 -> :ok
-      _ -> :error
+    HTTPClient.delete("/api/v2/help_center/categories/#{id}.json")
+    |> case do
+      {:ok, _} -> :ok
+      {:error, response} -> {:error, response}
     end
   end
 end

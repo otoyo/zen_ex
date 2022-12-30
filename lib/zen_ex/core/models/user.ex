@@ -14,10 +14,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.list
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list :: %ZenEx.Collection{} | {:error, String.t()}
+  @spec list :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(opts \\ []) when is_list(opts) do
     "/api/v2/users.json#{Query.build(opts)}"
     |> HTTPClient.get(users: [User])
@@ -29,10 +29,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.show(1)
-      %ZenEx.Entity.User{id: 1, name: "xxx", ...}
+      {:ok, %ZenEx.Entity.User{id: 1, name: "xxx", ...}}
 
   """
-  @spec show(integer) :: %User{} | {:error, String.t()}
+  @spec show(integer) :: {:ok, %User{}} | {:error, any()}
   def show(id) when is_integer(id) do
     HTTPClient.get("/api/v2/users/#{id}.json", user: User)
   end
@@ -43,10 +43,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.create(%ZenEx.Entity.User{name: "xxx", email: "xxx@xxx"})
-      %ZenEx.Entity.User{name: "xxx", email: "xxx@xxx", ...}
+      {:ok, %ZenEx.Entity.User{name: "xxx", email: "xxx@xxx", ...}}
 
   """
-  @spec create(%User{}) :: %User{} | {:error, String.t()} | nil
+  @spec create(%User{}) :: {:ok, %User{}} | {:error, any()}
   def create(%User{} = user) do
     HTTPClient.post("/api/v2/users.json", %{user: user}, user: User)
   end
@@ -57,10 +57,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.update(%ZenEx.Entity.User{id: 1, name: "xxx"})
-      %ZenEx.Entity.User{id: 1, name: "xxx", ...}
+      {:ok, %ZenEx.Entity.User{id: 1, name: "xxx", ...}}
 
   """
-  @spec update(%User{}) :: %User{} | {:error, String.t()}
+  @spec update(%User{}) :: {:ok, %User{}} | {:error, any()}
   def update(%User{} = user) do
     HTTPClient.put("/api/v2/users/#{user.id}.json", %{user: user}, user: User)
   end
@@ -71,10 +71,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.create_or_update(%ZenEx.Entity.User{name: "xxx", email: "xxx@xxx"})
-      %ZenEx.Entity.User{id: xxx, name: "xxx", email: "xxx@xxx", ...}
+      {:ok, %ZenEx.Entity.User{id: xxx, name: "xxx", email: "xxx@xxx", ...}}
 
   """
-  @spec create_or_update(%User{}) :: %User{} | {:error, String.t()}
+  @spec create_or_update(%User{}) :: {:ok, %User{}} | {:error, any()}
   def create_or_update(%User{} = user) do
     HTTPClient.post("/api/v2/users/create_or_update.json", %{user: user}, user: User)
   end
@@ -85,10 +85,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.destroy(1)
-      %ZenEx.Entity.User{id: 1, name: "xxx", active: false, ...}
+      :ok
 
   """
-  @spec destroy(integer) :: %User{} | {:error, String.t()}
+  @spec destroy(integer) :: {:ok, %User{}} | {:error, any()}
   def destroy(id) when is_integer(id) do
     HTTPClient.delete("/api/v2/users/#{id}.json", user: User)
   end
@@ -99,10 +99,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.permanently_destroy(1)
-      %ZenEx.Entity.User{id: 1, name: "xxx", active: false, ...}
+      :ok
 
   """
-  @spec permanently_destroy(integer) :: %User{} | {:error, String.t()}
+  @spec permanently_destroy(integer) :: {:ok, %User{}} | {:error, any()}
   def permanently_destroy(id) when is_integer(id) do
     HTTPClient.delete("/api/v2/deleted_users/#{id}.json", deleted_user: User)
   end
@@ -113,10 +113,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.create_many([%ZenEx.Entity.User{name: "xxx"}, ...])
-      %ZenEx.Entity.JobStatus{id: "xxx"}
+      {:ok, %ZenEx.Entity.JobStatus{id: "xxx"}}
 
   """
-  @spec create_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
+  @spec create_many(list(%User{})) :: {:ok, %JobStatus{}} | {:error, any()}
   def create_many(users) when is_list(users) do
     HTTPClient.post("/api/v2/users/create_many.json", %{users: users}, job_status: JobStatus)
   end
@@ -127,10 +127,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.update_many([%ZenEx.Entity.User{id: xxx, name: "xxx"}, ...])
-      %ZenEx.Entity.JobStatus{id: "xxx"}
+      {:ok, %ZenEx.Entity.JobStatus{id: "xxx"}}
 
   """
-  @spec update_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
+  @spec update_many(list(%User{})) :: {:ok, %JobStatus{}} | {:error, any()}
   def update_many(users) when is_list(users) do
     HTTPClient.put("/api/v2/users/update_many.json", %{users: users}, job_status: JobStatus)
   end
@@ -141,10 +141,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.create_or_update_many([%ZenEx.Entity.User{id: xxx, name: "xxx"}, ...])
-      %ZenEx.Entity.JobStatus{id: "xxx"}
+      {:ok, %ZenEx.Entity.JobStatus{id: "xxx"}}
 
   """
-  @spec create_or_update_many(list(%User{})) :: %JobStatus{} | {:error, String.t()}
+  @spec create_or_update_many(list(%User{})) :: {:ok, %JobStatus{}} | {:error, any()}
   def create_or_update_many(users) when is_list(users) do
     HTTPClient.post("/api/v2/users/create_or_update_many.json", %{users: users},
       job_status: JobStatus
@@ -157,10 +157,10 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.destroy_many([xxx, ...])
-      %ZenEx.Entity.JobStatus{id: "xxx"}
+      {:ok, %ZenEx.Entity.JobStatus{id: "xxx"}}
 
   """
-  @spec destroy_many(list(integer)) :: %JobStatus{} | {:error, String.t()}
+  @spec destroy_many(list(integer)) :: {:ok, %JobStatus{}} | {:error, any()}
   def destroy_many(ids) when is_list(ids) do
     HTTPClient.delete("/api/v2/users/destroy_many.json?ids=#{Enum.join(ids, ",")}",
       job_status: JobStatus
@@ -173,18 +173,18 @@ defmodule ZenEx.Model.User do
   ## Examples
 
       iex> ZenEx.Model.User.search(%{email: "first.last@domain.com"})
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
       iex> ZenEx.Model.User.search("David"})
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec search(map()) :: %ZenEx.Collection{} | {:error, String.t()}
+  @spec search(map()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def search(opts) when is_map(opts) do
     search(SearchQuery.build(opts))
   end
 
-  @spec search(String.t()) :: %ZenEx.Collection{} | {:error, String.t()}
+  @spec search(String.t()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def search(query) do
     "/api/v2/users/search.json?query=#{query}"
     |> HTTPClient.get(users: [User])

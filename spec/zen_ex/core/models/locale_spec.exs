@@ -10,9 +10,10 @@ defmodule ZenEx.Model.LocaleSpec do
 
   describe "show" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_locale()} end)
+      do:
+        mock(fn %{method: :get, url: _} -> {:ok, %Tesla.Env{status: 200, body: json_locale()}} end)
     )
 
-    it(do: expect(Model.Locale.show(locale().id) |> to(eq(locale()))))
+    it(do: expect({:ok, %Locale{}} = Model.Locale.show(locale().id)))
   end
 end
