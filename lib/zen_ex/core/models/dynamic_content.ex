@@ -18,18 +18,20 @@ defmodule ZenEx.Model.DynamicContent do
   """
   @spec list :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(opts \\ []) when is_list(opts) do
-    with {:ok, collection} <-
-           HTTPClient.get("/api/v2/dynamic_content/items.json#{Query.build(opts)}",
-             items: [DynamicContent]
-           ) do
-      collection_with_variants =
-        Map.update(collection, :entities, [], fn dynamic_contents ->
-          Enum.map(dynamic_contents, &_build_variants/1)
-        end)
+    HTTPClient.get("/api/v2/dynamic_content/items.json#{Query.build(opts)}",
+      items: [DynamicContent]
+    )
+    |> case do
+      {:ok, collection} ->
+        collection_with_variants =
+          Map.update(collection, :entities, [], fn dynamic_contents ->
+            Enum.map(dynamic_contents, &_build_variants/1)
+          end)
 
-      {:ok, collection_with_variants}
-    else
-      {:error, err} -> {:error, err}
+        {:ok, collection_with_variants}
+
+      {:error, err} ->
+        {:error, err}
     end
   end
 
