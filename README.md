@@ -10,7 +10,7 @@ Add `zen_ex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:zen_ex, "~> 0.5.0"}]
+  [{:zen_ex, "~> 0.8.0"}]
 end
 ```
 
@@ -35,154 +35,87 @@ See also: [Generating a new API token](https://support.zendesk.com/hc/en-us/arti
 
 ```elixir
 # List users
-users = ZenEx.Model.User.list.entities
+{:ok, %{entities: users}} = ZenEx.Model.User.list()
 
 # Show user
-user = ZenEx.Model.User.show(1)
+{:ok, user} = ZenEx.Model.User.show(1)
 
 # Create user
-user = ZenEx.Model.User.create(%ZenEx.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
+{:ok, user} = ZenEx.Model.User.create(%ZenEx.Entity.User{name: "otoyo", email: "otoyo@otoyo.com"})
 
-# List tickets
-collection = ZenEx.Model.Ticket.list(per_page: 100, sort_order: "desc")
+# Paginate tickets
+{:ok, collection} = ZenEx.Model.Ticket.list(per_page: 100, sort_order: "desc")
 tickets = collection.entities
 next_tickets = collection |> ZenEx.Collection.next
 
 # Show ticket
-ticket = ZenEx.Model.Ticket.show(1)
+{:ok, %{entities: ticket}} = ZenEx.Model.Ticket.show(1)
 
 # Create ticket
-ticket = ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{subject: "My printer is on fire!", description: "But no problem."})
+{:ok, ticket} = ZenEx.Model.Ticket.create(%ZenEx.Entity.Ticket{subject: "My printer is on fire!", description: "But no problem."})
 ```
 
-See also under ZenEx.Model.
+See also under `ZenEx.Model`.
 
 ## Supporting multiple Zendesk configs
 
 You may need to interact with more than one instance of Zendesk. In order to facilitate that there is a small override
 that can be put into the Process dictionary that will tell it to look for config settings keyed against a class name.
 
-For example:
+<details>
+  <summary>For details...</summary>
 
-config/config.exs
+  For example:
 
-```
-config :zen_ex,
-  subdomain: System.get_env("ZENDESK_SUBDOMAIN"),
-  user: System.get_env("ZENDESK_USER_EMAIL"),
-  api_token: System.get_env("ZENDESK_API_TOKEN")
+  config/config.exs
 
-config :zen_ex, ZendeskAlt,
-  subdomain: System.get_env("ZENDESK_ALT_SUBDOMAIN"),
-  user: System.get_env("ZENDESK_ALT_USER_EMAIL"),
-  api_token: System.get_env("ZENDESK_ALT_API_TOKEN")
-```
+  ```
+  config :zen_ex,
+    subdomain: System.get_env("ZENDESK_SUBDOMAIN"),
+    user: System.get_env("ZENDESK_USER_EMAIL"),
+    api_token: System.get_env("ZENDESK_API_TOKEN")
 
-Then whenever you want to use the alternate config, before using anything in the `zen_ex` library make sure to
-add a line of code like the following:
+  config :zen_ex, ZendeskAlt,
+    subdomain: System.get_env("ZENDESK_ALT_SUBDOMAIN"),
+    user: System.get_env("ZENDESK_ALT_USER_EMAIL"),
+    api_token: System.get_env("ZENDESK_ALT_API_TOKEN")
+  ```
 
-```
-Process.put(:zendesk_config_module, ZendeskAlt)
-```
+  Then whenever you want to use the alternate config, before using anything in the `zen_ex` library make sure to
+  add a line of code like the following:
 
-Anytime you use the zendesk library after that it will use the alternate config until you remove that process
-dictionary entry. It is good practice to put it back when you are done.
+  ```
+  Process.put(:zendesk_config_module, ZendeskAlt)
+  ```
 
-```
-Process.put(:zendesk_config_module, nil)
-```
+  Anytime you use the zendesk library after that it will use the alternate config until you remove that process
+  dictionary entry. It is good practice to put it back when you are done.
 
-If you do not add a `:zendesk_config_module` key to the Process dictionary then it will continue to use the
-default `zen_ex` config settings.
+  ```
+  Process.put(:zendesk_config_module, nil)
+  ```
+
+  If you do not add a `:zendesk_config_module` key to the Process dictionary then it will continue to use the
+  default `zen_ex` config settings.
+</details>
+
 
 ## Supported API
 
-### [Core API](https://developer.zendesk.com/rest_api/docs/core/introduction)
+| Capabilities | Entities |
+| --- | --- |
+| Ticketing | Users |
+| | User Identities |
+| | Tickets |
+| | Dynamic Content Items |
+| | Dynamic Content Item Variants |
+| | Locales |
+| | Job Statuses |
+| Help Center | Categories |
+| | Sections |
+| | Articles |
+| | Translations |
 
-- Users
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `create_or_update`
-  - `destroy`
-  - `create_many`
-  - `update_many`
-  - `create_or_update_many`
-  - `destroy_many`
-  - `search`
-- User Identities
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `make_primary`
-  - `verify`
-  - `request_user_verification`
-  - `delete`
-- Tickets
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `destroy`
-  - `create_many`
-  - `update_many`
-  - `destroy_many`
-- Dynamic contents
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `destroy`
-- Variants of dynamic contents
-  - `list`
-  - `show`
-  - `create`
-  - `create_many`
-  - `update`
-  - `update_many`
-  - `destroy`
-- Locales
-  - `show`
-- Job statuses
-  - `list`
-  - `show`
-  - `show_many`
+## Contribution
 
-### [Help Center API](https://developer.zendesk.com/rest_api/docs/help_center/introduction)
-
-- Categories
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `destroy`
-- Sections
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `destroy`
-- Articles
-  - `list`
-  - `show`
-  - `create`
-  - `update`
-  - `search`
-  - `destroy`
-- Translations
-  - `list`
-  - `list_missing`
-  - `show`
-  - `create`
-  - `update`
-  - `destroy`
-
-## Contributing
-
-Contributions are welcome ;)
-
-## LICENSE
-
-ZenEx is released under CC0-1.0 (see LICENSE).
+Please make an Issue or PR.

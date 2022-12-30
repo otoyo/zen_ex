@@ -31,108 +31,206 @@ defmodule ZenEx.Model.TicketSpec do
     ~s({"count":2,"results":[{"id":35436,"subject":"Help I need somebody!"},{"id":20057623,"subject":"Not just anybody!"}]})
   end
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_tickets()} end)
+      do:
+        mock(fn %{method: :get, url: _} ->
+          {:ok, %Tesla.Env{status: 200, body: json_tickets()}}
+        end)
     )
 
-    it(do: expect(Model.Ticket.list() |> to(be_struct(ZenEx.Collection))))
-    it(do: expect(Model.Ticket.list().entities |> to(eq(tickets()))))
+    it(do: expect({:ok, %ZenEx.Collection{}} = Model.Ticket.list()))
   end
 
   describe "show" do
-    before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_ticket()}}
+          end)
+      )
 
-    it(do: expect(Model.Ticket.show(ticket().id) |> to(eq(ticket()))))
+      it(do: expect({:ok, %Ticket{}} = Model.Ticket.show(ticket().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.show(ticket().id)))
+    end
   end
 
   describe "create" do
-    before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
-    )
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 201, body: json_ticket()}}
+          end)
+      )
 
-    it(do: expect(Model.Ticket.create(ticket()) |> to(be_struct(Ticket))))
+      it(do: expect({:ok, %Ticket{}} = Model.Ticket.create(ticket())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.create(ticket())))
+    end
   end
 
   describe "update" do
-    before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_ticket()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_ticket()}}
+          end)
+      )
 
-    it(do: expect(Model.Ticket.update(ticket()) |> to(be_struct(Ticket))))
+      it(do: expect({:ok, %Ticket{}} = Model.Ticket.update(ticket())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.update(ticket())))
+    end
   end
 
   describe "destroy" do
     context "response status: 204" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
+      before(do: mock(fn %{method: :delete, url: _} -> {:ok, %Tesla.Env{status: 204}} end))
 
-      it(do: expect(Model.Ticket.destroy(ticket().id) |> to(eq(:ok))))
+      it(do: expect(:ok = Model.Ticket.destroy(ticket().id)))
     end
 
     context "response status: 404" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
+      before(do: mock(fn %{method: :delete, url: _} -> {:error, %Tesla.Env{status: 404}} end))
 
-      it(do: expect(Model.Ticket.destroy(ticket().id) |> to(eq(:error))))
+      it(do: expect({:error, _} = Model.Ticket.destroy(ticket().id)))
     end
   end
 
   describe "create_many" do
-    before(
-      do:
-        mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.Ticket.create_many(tickets()) |> to(be_struct(JobStatus))))
+      it(do: expect({:ok, %JobStatus{}} = Model.Ticket.create_many(tickets())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.create_many(tickets())))
+    end
   end
 
   describe "update_many" do
-    before(
-      do:
-        mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.Ticket.update_many(tickets()) |> to(be_struct(JobStatus))))
+      it(do: expect({:ok, %JobStatus{}} = Model.Ticket.update_many(tickets())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.update_many(tickets())))
+    end
   end
 
   describe "destroy_many" do
-    before(
-      do:
-        mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(
-      do:
-        expect(
-          Model.Ticket.destroy_many(Enum.map(tickets(), & &1.id))
-          |> to(be_struct(JobStatus))
-        )
-    )
+      it(
+        do: expect({:ok, %JobStatus{}} = Model.Ticket.destroy_many(Enum.map(tickets(), & &1.id)))
+      )
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.destroy_many(Enum.map(tickets(), & &1.id))))
+    end
   end
 
   describe "search" do
-    before(
-      do:
-        mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_search_tickets()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_search_tickets()}}
+          end)
+      )
 
-    context "when argument is a map" do
-      it(do: expect(Model.Ticket.search(%{status: "open"}) |> to(be_struct(ZenEx.Collection))))
-      it(do: expect(Model.Ticket.search(%{status: "open"}).entities |> to(eq(tickets()))))
+      context "when argument is a map" do
+        it(do: expect({:ok, %ZenEx.Collection{}} = Model.Ticket.search(%{status: "open"})))
+      end
+
+      context "when argument is a string" do
+        it(do: expect({:ok, %ZenEx.Collection{}} = Model.Ticket.search(%{status: "open"})))
+      end
     end
 
-    context "when argument is a string" do
-      it(do: expect(Model.Ticket.search("my_string") |> to(be_struct(ZenEx.Collection))))
-      it(do: expect(Model.Ticket.search("my_string").entities |> to(eq(tickets()))))
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.Ticket.search(%{status: "open"})))
     end
   end
 

@@ -13,10 +13,10 @@ defmodule ZenEx.Model.JobStatus do
   ## Examples
 
       iex> ZenEx.Model.JobStatus.list
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list :: %ZenEx.Collection{} | {:error, String.t()}
+  @spec list :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(opts \\ []) when is_list(opts) do
     "/api/v2/job_statuses.json#{Query.build(opts)}"
     |> HTTPClient.get(job_statuses: [JobStatus])
@@ -28,10 +28,10 @@ defmodule ZenEx.Model.JobStatus do
   ## Examples
 
       iex> ZenEx.Model.JobStatus.show("xxx")
-      %ZenEx.Entity.JobStatus{id: "xxx", ...}
+      {:ok, %ZenEx.Entity.JobStatus{id: "xxx", ...}}
 
   """
-  @spec show(binary) :: %JobStatus{} | {:error, String.t()}
+  @spec show(binary) :: {:ok, %JobStatus{}} | {:error, any()}
   def show(id) when is_binary(id) do
     HTTPClient.get("/api/v2/job_statuses/#{id}.json", job_status: JobStatus)
   end
@@ -42,10 +42,10 @@ defmodule ZenEx.Model.JobStatus do
   ## Examples
 
       iex> ZenEx.Model.JobStatus.show_many(["xxx", ...])
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec show_many(list(binary)) :: %ZenEx.Collection{} | {:error, String.t()}
+  @spec show_many(list(binary)) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def show_many(ids) when is_list(ids) do
     HTTPClient.get("/api/v2/job_statuses/show_many.json#{Query.build(ids: ids)}",
       job_statuses: [JobStatus]

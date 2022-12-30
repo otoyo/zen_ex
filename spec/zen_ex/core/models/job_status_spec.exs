@@ -42,50 +42,56 @@ defmodule ZenEx.Model.JobStatusSpec do
     })
   end
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_statuses()}
+          {:ok, %Tesla.Env{status: 200, body: json_job_statuses()}}
         end)
     )
 
-    it(do: expect(Model.JobStatus.list() |> to(be_struct(ZenEx.Collection))))
-    it(do: expect(Model.JobStatus.list().entities |> to(eq(job_statuses()))))
+    it(do: expect({:ok, %ZenEx.Collection{}} = Model.JobStatus.list()))
   end
 
   describe "show" do
-    before(
-      do:
-        mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.JobStatus.show(job_status().id) |> to(eq(job_status()))))
+      it(do: expect({:ok, %JobStatus{}} = Model.JobStatus.show(job_status().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.JobStatus.show(job_status().id)))
+    end
   end
 
   describe "show_many" do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_statuses()}
+          {:ok, %Tesla.Env{status: 200, body: json_job_statuses()}}
         end)
     )
 
     it(
       do:
         expect(
-          Model.JobStatus.show_many(Enum.map(job_statuses(), & &1.id))
-          |> to(be_struct(ZenEx.Collection))
-        )
-    )
-
-    it(
-      do:
-        expect(
-          Model.JobStatus.show_many(Enum.map(job_statuses(), & &1.id)).entities
-          |> to(eq(job_statuses()))
+          {:ok, %ZenEx.Collection{}} =
+            Model.JobStatus.show_many(Enum.map(job_statuses(), & &1.id))
         )
     )
   end

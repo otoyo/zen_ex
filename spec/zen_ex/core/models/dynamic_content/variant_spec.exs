@@ -33,125 +33,222 @@ defmodule ZenEx.Model.DynamicContent.VariantSpec do
     struct(DynamicContent, %{id: 112_233, name: "mail-address", default_locale_id: 1})
   end
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variants()} end)
+      do:
+        mock(fn %{method: :get, url: _} ->
+          {:ok, %Tesla.Env{status: 200, body: json_variants()}}
+        end)
     )
 
     it(
       do:
         expect(
-          Model.DynamicContent.Variant.list(dynamic_content().id)
-          |> to(be_struct(ZenEx.Collection))
-        )
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.list(dynamic_content().id).entities
-          |> to(eq(variants()))
+          {:ok, %ZenEx.Collection{}} = Model.DynamicContent.Variant.list(dynamic_content().id)
         )
     )
   end
 
   describe "show" do
-    before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.show(dynamic_content().id, variant().id)
-          |> to(eq(variant()))
-        )
-    )
-  end
-
-  describe "create" do
-    before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.create(dynamic_content().id, variant())
-          |> to(be_struct(Variant))
-        )
-    )
-  end
-
-  describe "create_many" do
-    before(
-      do:
-        mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.create_many(dynamic_content().id, variants())
-          |> to(be_struct(JobStatus))
-        )
-    )
-  end
-
-  describe "update" do
-    before(
-      do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_variant()} end)
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.update(dynamic_content().id, variant())
-          |> to(be_struct(Variant))
-        )
-    )
-  end
-
-  describe "update_many" do
-    before(
-      do:
-        mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
-
-    it(
-      do:
-        expect(
-          Model.DynamicContent.Variant.update_many(dynamic_content().id, variants())
-          |> to(be_struct(JobStatus))
-        )
-    )
-  end
-
-  describe "destroy" do
-    context "response status: 204" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 204} end))
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_variant()}}
+          end)
+      )
 
       it(
         do:
           expect(
-            Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id)
-            |> to(eq(:ok))
+            {:ok, %Variant{}} =
+              Model.DynamicContent.Variant.show(dynamic_content().id, variant().id)
           )
       )
     end
 
     context "response status: 404" do
-      before(do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 404} end))
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
 
       it(
         do:
           expect(
-            Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id)
-            |> to(eq(:error))
+            {:error, _} = Model.DynamicContent.Variant.show(dynamic_content().id, variant().id)
+          )
+      )
+    end
+  end
+
+  describe "create" do
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 201, body: json_variant()}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:ok, %Variant{}} =
+              Model.DynamicContent.Variant.create(dynamic_content().id, variant())
+          )
+      )
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:error, _} = Model.DynamicContent.Variant.create(dynamic_content().id, variant())
+          )
+      )
+    end
+  end
+
+  describe "create_many" do
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            %Tesla.Env{status: 201, body: json_job_status()}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:ok, %JobStatus{}} =
+              Model.DynamicContent.Variant.create_many(dynamic_content().id, variants())
+          )
+      )
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:error, _} =
+              Model.DynamicContent.Variant.create_many(dynamic_content().id, variants())
+          )
+      )
+    end
+  end
+
+  describe "update" do
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_variant()}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:ok, %Variant{}} =
+              Model.DynamicContent.Variant.update(dynamic_content().id, variant())
+          )
+      )
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:error, _} = Model.DynamicContent.Variant.update(dynamic_content().id, variant())
+          )
+      )
+    end
+  end
+
+  describe "update_many" do
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:ok, %JobStatus{}} =
+              Model.DynamicContent.Variant.update_many(dynamic_content().id, variants())
+          )
+      )
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:error, _} =
+              Model.DynamicContent.Variant.update_many(dynamic_content().id, variants())
+          )
+      )
+    end
+  end
+
+  describe "destroy" do
+    context "response status: 204" do
+      before(do: mock(fn %{method: :delete, url: _} -> {:ok, %Tesla.Env{status: 204}} end))
+
+      it(
+        do: expect(:ok = Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id))
+      )
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(
+        do:
+          expect(
+            {:error, _} = Model.DynamicContent.Variant.destroy(dynamic_content().id, variant().id)
           )
       )
     end

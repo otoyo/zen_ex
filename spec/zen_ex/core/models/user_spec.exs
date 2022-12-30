@@ -32,137 +32,282 @@ defmodule ZenEx.Model.UserSpec do
     ~s({"count":2,"users":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
   end
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
-      do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_users()} end)
+      do:
+        mock(fn %{method: :get, url: _} -> {:ok, %Tesla.Env{status: 200, body: json_users()}} end)
     )
 
-    it(do: expect(Model.User.list() |> to(be_struct(ZenEx.Collection))))
-    it(do: expect(Model.User.list().entities |> to(eq(users()))))
+    it(do: expect({:ok, %ZenEx.Collection{}} = Model.User.list()))
   end
 
   describe "show" do
-    before(do: mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} -> {:ok, %Tesla.Env{status: 200, body: json_user()}} end)
+      )
 
-    it(do: expect(Model.User.show(user().id) |> to(eq(user()))))
+      it(do: expect({:ok, %User{}} = Model.User.show(user().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.show(user().id)))
+    end
   end
 
   describe "create" do
-    before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
-    )
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 201, body: json_user()}}
+          end)
+      )
 
-    it(do: expect(Model.User.create(user()) |> to(be_struct(User))))
+      it(do: expect({:ok, %User{}} = Model.User.create(user())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.create(user())))
+    end
   end
 
   describe "update" do
-    before(do: mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_user()} end))
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} -> {:ok, %Tesla.Env{status: 200, body: json_user()}} end)
+      )
 
-    it(do: expect(Model.User.update(user()) |> to(be_struct(User))))
+      it(do: expect({:ok, %User{}} = Model.User.update(user())))
+    end
+
+    context "response status: 500" do
+      before(
+        do: mock(fn %{method: :put, url: _} -> {:error, %Tesla.Env{status: 500, body: ""}} end)
+      )
+
+      it(do: expect({:error, _} = Model.User.update(user())))
+    end
   end
 
   describe "create_or_update" do
-    before(
-      do: mock(fn %{method: :post, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user()}}
+          end)
+      )
 
-    it(do: expect(Model.User.create_or_update(user()) |> to(be_struct(User))))
+      it(do: expect({:ok, %User{}} = Model.User.create_or_update(user())))
+    end
+
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 201, body: json_user()}}
+          end)
+      )
+
+      it(do: expect({:ok, %User{}} = Model.User.create_or_update(user())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.create_or_update(user())))
+    end
   end
 
   describe "destroy" do
-    before(
-      do: mock(fn %{method: :delete, url: _} -> %Tesla.Env{status: 200, body: json_user()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user()}}
+          end)
+      )
 
-    it(do: expect(Model.User.destroy(user().id) |> to(be_struct(User))))
+      it(do: expect({:ok, %User{}} = Model.User.destroy(user().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.destroy(user().id)))
+    end
   end
 
   describe "permanently_destroy" do
-    before(
-      do:
-        mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: json_deleted_user()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_deleted_user()}}
+          end)
+      )
 
-    it(do: expect(Model.User.permanently_destroy(user().id) |> to(be_struct(User))))
+      it(do: expect({:ok, %User{}} = Model.User.permanently_destroy(user().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.permanently_destroy(user().id)))
+    end
   end
 
   describe "create_many" do
-    before(
-      do:
-        mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.User.create_many(users()) |> to(be_struct(JobStatus))))
+      it(do: expect({:ok, %JobStatus{}} = Model.User.create_many(users())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.create_many(users())))
+    end
   end
 
   describe "update_many" do
-    before(
-      do:
-        mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.User.update_many(users()) |> to(be_struct(JobStatus))))
+      it(do: expect({:ok, %JobStatus{}} = Model.User.update_many(users())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.update_many(users())))
+    end
   end
 
   describe "create_or_update_many" do
-    before(
-      do:
-        mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(do: expect(Model.User.create_or_update_many(users()) |> to(be_struct(JobStatus))))
+      it(do: expect({:ok, %JobStatus{}} = Model.User.create_or_update_many(users())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.create_or_update_many(users())))
+    end
   end
 
   describe "destroy_many" do
-    before(
-      do:
-        mock(fn %{method: :delete, url: _} ->
-          %Tesla.Env{status: 200, body: json_job_status()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_job_status()}}
+          end)
+      )
 
-    it(
-      do: expect(Model.User.destroy_many(Enum.map(users(), & &1.id)) |> to(be_struct(JobStatus)))
-    )
+      it(do: expect({:ok, %JobStatus{}} = Model.User.destroy_many(Enum.map(users(), & &1.id))))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :delete, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.User.destroy_many(Enum.map(users(), & &1.id))))
+    end
   end
 
   describe "search" do
-    before(
-      do:
-        mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_search_users()}
-        end)
-    )
-
-    context "when argument is a map" do
-      it(
+    context "response status: 200" do
+      before(
         do:
-          expect(
-            Model.User.search(%{email: "first.last@example.com"})
-            |> to(be_struct(ZenEx.Collection))
-          )
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_search_users()}}
+          end)
       )
 
-      it(
-        do:
-          expect(
-            Model.User.search(%{email: "first.last@example.com"}).entities
-            |> to(eq(users()))
-          )
-      )
-    end
+      context "when argument is a map" do
+        it(
+          do:
+            expect(
+              {:ok, %ZenEx.Collection{}} = Model.User.search(%{email: "first.last@example.com"})
+            )
+        )
+      end
 
-    context "when argument is a string" do
-      it(do: expect(Model.User.search("my_string") |> to(be_struct(ZenEx.Collection))))
-      it(do: expect(Model.User.search("my_string").entities |> to(eq(users()))))
+      context "when argument is a string" do
+        it(do: expect({:ok, %ZenEx.Collection{}} = Model.User.search("my_string")))
+      end
     end
   end
 end

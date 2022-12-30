@@ -46,74 +46,119 @@ defmodule ZenEx.Model.UserIdentitySpec do
 
   let(:user, do: struct(User, id: 135))
 
+  let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
+
   describe "list" do
     before(
       do:
         mock(fn %{method: :get, url: _} ->
-          %Tesla.Env{status: 200, body: json_user_identities()}
+          {:ok, %Tesla.Env{status: 200, body: json_user_identities()}}
         end)
     )
 
-    it(do: expect(Model.UserIdentity.list(user) |> to(be_struct(ZenEx.Collection))))
-    it(do: expect(Model.UserIdentity.list(user).entities |> to(eq(user_identities()))))
+    it(do: expect({:ok, %ZenEx.Collection{}} = Model.UserIdentity.list(user())))
   end
 
   describe "show" do
-    before(
-      do:
-        mock(fn %{method: :get, url: _} -> %Tesla.Env{status: 200, body: json_user_identity()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user_identity()}}
+          end)
+      )
 
-    it(do: expect(Model.UserIdentity.show(user, user_identity().id) |> to(eq(user_identity()))))
+      it(do: expect({:ok, %UserIdentity{}} = Model.UserIdentity.show(user(), user_identity().id)))
+    end
+
+    context "response status: 404" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.UserIdentity.show(user(), user_identity().id)))
+    end
   end
 
   describe "create" do
-    before(
-      do:
-        mock(fn %{method: :post, url: _} ->
-          %Tesla.Env{status: 200, body: json_user_identity()}
-        end)
-    )
+    context "response status: 201" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user_identity()}}
+          end)
+      )
 
-    it(
-      do: expect(Model.UserIdentity.create(user, user_identity()) |> to(be_struct(UserIdentity)))
-    )
+      it(do: expect({:ok, %UserIdentity{}} = Model.UserIdentity.create(user(), user_identity())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :post, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.UserIdentity.create(user(), user_identity())))
+    end
   end
 
   describe "update" do
-    before(
-      do:
-        mock(fn %{method: :put, url: _} -> %Tesla.Env{status: 200, body: json_user_identity()} end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user_identity()}}
+          end)
+      )
 
-    it(
-      do: expect(Model.UserIdentity.update(user, user_identity()) |> to(be_struct(UserIdentity)))
-    )
+      it(do: expect({:ok, %UserIdentity{}} = Model.UserIdentity.update(user(), user_identity())))
+    end
+
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.UserIdentity.update(user(), user_identity())))
+    end
   end
 
   describe "make_primary" do
-    before(
-      do:
-        mock(fn %{method: :put, url: _} ->
-          %Tesla.Env{status: 200, body: json_user_identities()}
-        end)
-    )
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_user_identities()}}
+          end)
+      )
 
-    it(
-      do:
-        expect(
-          Model.UserIdentity.make_primary(user, user_identity().id)
-          |> to(be_struct(ZenEx.Collection))
-        )
-    )
+      it(
+        do:
+          expect(
+            {:ok, %ZenEx.Collection{}} =
+              Model.UserIdentity.make_primary(user(), user_identity().id)
+          )
+      )
+    end
 
-    it(
-      do:
-        expect(
-          Model.UserIdentity.make_primary(user, user_identity().id).entities
-          |> to(eq(user_identities()))
-        )
-    )
+    context "response status: 500" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} ->
+            {:error, %Tesla.Env{status: 500, body: ""}}
+          end)
+      )
+
+      it(do: expect({:error, _} = Model.UserIdentity.make_primary(user(), user_identity().id)))
+    end
   end
 
   describe "verify" do
@@ -121,22 +166,22 @@ defmodule ZenEx.Model.UserIdentitySpec do
       before(
         do:
           mock(fn %{method: :put, url: _} ->
-            %Tesla.Env{status: 200, body: %{}}
+            {:ok, %Tesla.Env{status: 200, body: %{}}}
           end)
       )
 
-      it(do: expect(Model.UserIdentity.verify(user, user_identity().id) |> to(eq(:ok))))
+      it(do: expect(:ok = Model.UserIdentity.verify(user(), user_identity().id)))
     end
 
     context "response status: 404" do
       before(
         do:
           mock(fn %{method: :put, url: _} ->
-            %Tesla.Env{status: 404, body: json_user_identity()}
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
           end)
       )
 
-      it(do: expect(Model.UserIdentity.verify(user, user_identity().id) |> to(eq(:error))))
+      it(do: expect({:error, _} = Model.UserIdentity.verify(user(), user_identity().id)))
     end
   end
 
@@ -145,16 +190,12 @@ defmodule ZenEx.Model.UserIdentitySpec do
       before(
         do:
           mock(fn %{method: :put, url: _} ->
-            %Tesla.Env{status: 200, body: %{}}
+            {:ok, %Tesla.Env{status: 200, body: %{}}}
           end)
       )
 
       it(
-        do:
-          expect(
-            Model.UserIdentity.request_user_verification(user, user_identity().id)
-            |> to(eq(:ok))
-          )
+        do: expect(:ok = Model.UserIdentity.request_user_verification(user(), user_identity().id))
       )
     end
 
@@ -162,15 +203,14 @@ defmodule ZenEx.Model.UserIdentitySpec do
       before(
         do:
           mock(fn %{method: :put, url: _} ->
-            %Tesla.Env{status: 404, body: %{}}
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
           end)
       )
 
       it(
         do:
           expect(
-            Model.UserIdentity.request_user_verification(user, user_identity().id)
-            |> to(eq(:error))
+            {:error, _} = Model.UserIdentity.request_user_verification(user(), user_identity().id)
           )
       )
     end
@@ -181,22 +221,22 @@ defmodule ZenEx.Model.UserIdentitySpec do
       before(
         do:
           mock(fn %{method: :delete, url: _} ->
-            %Tesla.Env{status: 204, body: json_user_identity()}
+            {:ok, %Tesla.Env{status: 204, body: json_user_identity()}}
           end)
       )
 
-      it(do: expect(Model.UserIdentity.destroy(user, user_identity().id) |> to(eq(:ok))))
+      it(do: expect(:ok = Model.UserIdentity.destroy(user(), user_identity().id)))
     end
 
     context "response status: 404" do
       before(
         do:
           mock(fn %{method: :delete, url: _} ->
-            %Tesla.Env{status: 404, body: json_user_identity()}
+            {:error, %Tesla.Env{status: 404, body: json_error()}}
           end)
       )
 
-      it(do: expect(Model.UserIdentity.destroy(user, user_identity().id) |> to(eq(:error))))
+      it(do: expect({:error, _} = Model.UserIdentity.destroy(user(), user_identity().id)))
     end
   end
 end

@@ -4,6 +4,7 @@ defmodule ZenEx.HTTPClient do
   alias Tesla.Env
   alias ZenEx.Collection
 
+  @spec auth_conn(list()) :: list()
   def auth_conn(middlewares \\ []) do
     Tesla.client(
       [
@@ -14,72 +15,100 @@ defmodule ZenEx.HTTPClient do
     )
   end
 
+  @spec get(String.t()) :: {:ok, %Env{}} | {:error, any()}
   def get("https://" <> _ = url) do
-    with {:ok, response} <- Tesla.get(auth_conn([Tesla.Middleware.Compression]), url) do
-      response
-    end
+    Tesla.get(auth_conn([Tesla.Middleware.Compression]), url)
   end
 
+  @spec get(String.t()) :: {:ok, %Env{}} | {:error, any()}
   def get(endpoint) do
     endpoint |> build_url |> get
   end
 
+  @spec get(String.t(), %{}) :: {:ok, %{}} | {:error, any()}
   def get("https://" <> _ = url, decode_as) do
-    url |> get |> _build_entity(decode_as)
+    url
+    |> get
+    |> case do
+      {:ok, response} -> _build_entity(response, decode_as)
+      {:error, response} -> {:error, response}
+    end
   end
 
+  @spec get(String.t(), %{}) :: {:ok, %{}} | {:error, any()}
   def get(endpoint, decode_as) do
     endpoint |> build_url |> get(decode_as)
   end
 
+  @spec post(String.t(), map(), %{}) :: {:ok, %{}} | {:error, any()}
   def post(endpoint, %{} = param, decode_as) do
-    with {:ok, response} <-
-           Tesla.post(auth_conn(), build_url(endpoint), param) do
-      response |> _build_entity(decode_as)
+    Tesla.post(auth_conn(), build_url(endpoint), param)
+    |> case do
+      {:ok, response} -> _build_entity(response, decode_as)
+      {:error, response} -> {:error, response}
     end
   end
 
+  @spec put(String.t(), map(), %{}) :: {:ok, %{}} | {:error, any()}
   def put(endpoint, %{} = param, decode_as) do
-    with {:ok, response} <-
-           Tesla.put(auth_conn(), build_url(endpoint), param) do
-      response |> _build_entity(decode_as)
+    Tesla.put(auth_conn(), build_url(endpoint), param)
+    |> case do
+      {:ok, response} -> _build_entity(response, decode_as)
+      {:error, response} -> {:error, response}
     end
   end
 
+  @spec put(String.t(), map()) :: {:ok, %Env{}} | {:error, any()}
   def put(endpoint, %{} = param) do
-    with {:ok, response} <- Tesla.put(auth_conn(), build_url(endpoint), param) do
-      response
+    Tesla.put(auth_conn(), build_url(endpoint), param)
+  end
+
+  @spec delete(String.t(), %{}) :: {:ok, %Env{}} | {:error, any()}
+  def delete(endpoint, decode_as) do
+    endpoint
+    |> delete
+    |> case do
+      {:ok, response} -> _build_entity(response, decode_as)
+      {:error, response} -> {:error, response}
     end
   end
 
-  def delete(endpoint, decode_as), do: delete(endpoint) |> _build_entity(decode_as)
-
+  @spec delete(String.t()) :: {:ok, %Env{}} | {:error, any()}
   def delete(endpoint) do
-    with {:ok, response} <- Tesla.delete(auth_conn(), build_url(endpoint)) do
-      response
-    end
+    Tesla.delete(auth_conn(), build_url(endpoint))
   end
 
+  @spec build_url(String.t()) :: String.t()
   def build_url(endpoint) do
     "https://#{get_env(:subdomain)}.zendesk.com#{endpoint}"
   end
 
-  def _build_entity(%Env{} = response, [{key, [module]}]) do
-    {entities, page} =
-      response.body
-      |> Poison.decode!(keys: :atoms, as: %{key => [struct(module)]})
-      |> Map.pop(key)
-
-    struct(Collection, Map.merge(page, %{entities: entities, decode_as: [{key, [module]}]}))
+  @spec _build_entity(%Env{}, key: [%{}]) :: {:ok, %Collection{}} | {:error, any()}
+  def _build_entity(%Env{status: status, body: body}, [{key, [module]}])
+      when status in 200..299 do
+    with {:ok, parser} <-
+           body |> Poison.decode(keys: :atoms, as: %{key => [struct(module)]}),
+         {entities, page} <-
+           Map.pop(parser, key) do
+      {:ok,
+       struct(Collection, Map.merge(page, %{entities: entities, decode_as: [{key, [module]}]}))}
+    else
+      {:error, err} -> {:error, err}
+    end
   end
 
-  def _build_entity(%Env{} = response, [{key, module}]) do
-    response.body |> Poison.decode!(keys: :atoms, as: %{key => struct(module)}) |> Map.get(key)
+  @spec _build_entity(%Env{}, key: %{}) :: {:ok, %{}} | {:error, any()}
+  def _build_entity(%Env{status: status, body: body}, [{key, module}]) when status in 200..299 do
+    body
+    |> Poison.decode(keys: :atoms, as: %{key => struct(module)})
+    |> case do
+      {:ok, parser} -> Map.fetch(parser, key)
+      {:error, err} -> {:error, err}
+    end
   end
 
-  def _build_entity({:error, error}, _) do
-    {:error, error}
-  end
+  @spec _build_entity(%Env{}, any()) :: {:error, %Env{}}
+  def _build_entity(%Env{} = response, _), do: {:error, response}
 
   defp get_env(key) do
     case Process.get(:zendesk_config_module) do

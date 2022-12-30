@@ -14,13 +14,13 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.list("en-us")
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
       iex> ZenEx.HelpCenter.Model.Article.list("en-us", 1)
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec list(keyword()) :: %ZenEx.Collection{}
+  @spec list(keyword()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def list(locale, section_id_or_opts \\ [], opts \\ []) when is_list(opts) do
     case section_id_or_opts do
       section_id when is_integer(section_id) ->
@@ -38,10 +38,10 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.show("en-us", 1)
-      %ZenEx.HelpCenter.Entity.Article{id: 1, name: xxx, locale: "en-us", ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Article{id: 1, name: xxx, locale: "en-us", ...}}
 
   """
-  @spec show(String.t(), integer) :: %Article{}
+  @spec show(String.t(), integer) :: {:ok, %Article{}} | {:error, any()}
   def show(locale, id) when is_integer(id) do
     HTTPClient.get("/api/v2/help_center/#{locale}/articles/#{id}.json", article: Article)
   end
@@ -52,10 +52,10 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.create(%ZenEx.HelpCenter.Entity.Article{name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Article{name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Article{name: xxx, locale: xxx, ...}}
 
   """
-  @spec create(%Article{}) :: %Article{}
+  @spec create(%Article{}) :: {:ok, %Article{}} | {:error, any()}
   def create(%Article{} = article) do
     HTTPClient.post("/api/v2/help_center/articles.json", %{article: article}, article: Article)
   end
@@ -66,10 +66,10 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.update(%ZenEx.HelpCenter.Entity.Article{id: 1, name: xxx, locale: xxx, ...})
-      %ZenEx.HelpCenter.Entity.Article{id: 1, name: xxx, locale: xxx, ...}
+      {:ok, %ZenEx.HelpCenter.Entity.Article{id: 1, name: xxx, locale: xxx, ...}}
 
   """
-  @spec update(%Article{}) :: %Article{}
+  @spec update(%Article{}) :: {:ok, %Article{}} | {:error, any()}
   def update(%Article{} = article) do
     HTTPClient.put("/api/v2/help_center/articles/#{article.id}.json", %{article: article},
       article: Article
@@ -85,11 +85,12 @@ defmodule ZenEx.HelpCenter.Model.Article do
       :ok
 
   """
-  @spec destroy(integer) :: :ok | :error
+  @spec destroy(integer) :: :ok | {:error, any()}
   def destroy(id) when is_integer(id) do
-    case HTTPClient.delete("/api/v2/help_center/articles/#{id}.json").status do
-      204 -> :ok
-      _ -> :error
+    HTTPClient.delete("/api/v2/help_center/articles/#{id}.json")
+    |> case do
+      {:ok, _} -> :ok
+      {:error, response} -> {:error, response}
     end
   end
 
@@ -99,10 +100,10 @@ defmodule ZenEx.HelpCenter.Model.Article do
   ## Examples
 
       iex> ZenEx.HelpCenter.Model.Article.search("query={search_string}&updated_after=2017-01-01")
-      %ZenEx.Collection{}
+      {:ok, %ZenEx.Collection{}}
 
   """
-  @spec search(String.t()) :: %ZenEx.Collection{}
+  @spec search(String.t()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def search(query) do
     HTTPClient.get("/api/v2/help_center/articles/search.json?#{query}", results: [Article])
   end
