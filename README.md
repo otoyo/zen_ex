@@ -24,10 +24,12 @@ Add your Zendesk settings to your config:
 
 ```elixir
 config :zen_ex,
-  subdomain: "your-zendesk-subdomain",
-  user: "otoyo@otoyo.com",
-  api_token: "xxxx"
+  subdomain: System.get_env("ZENDESK_SUBDOMAIN"),
+  user: System.get_env("ZENDESK_USER_EMAIL"),
+  api_token: System.get_env("ZENDESK_API_TOKEN")
 ```
+
+And set above environment variables.
 
 See also: [Generating a new API token](https://support.zendesk.com/hc/en-us/articles/226022787)
 
