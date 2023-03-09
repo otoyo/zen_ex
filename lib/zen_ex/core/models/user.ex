@@ -186,7 +186,14 @@ defmodule ZenEx.Model.User do
 
   @spec search(String.t()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def search(query) do
-    "/api/v2/users/search.json?query=#{query}"
+    base_url = "/api/v2/users/search.json?"
+
+    # external_id queries are special case where we expect an exact match
+    # no other query criteria should be present
+    cond do
+      String.starts_with?(query, "external_id") -> "#{base_url}external_id=#{query |> String.split(":") |> List.last()}"
+      true -> "#{base_url}query=#{query}"
+    end
     |> HTTPClient.get(users: [User])
   end
 end
