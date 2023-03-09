@@ -196,4 +196,26 @@ defmodule ZenEx.Model.User do
     end
     |> HTTPClient.get(users: [User])
   end
+
+  @doc """
+  Add tags for a user.
+
+  Only additive. Won't overwrite existing tags.
+
+  ## Examples
+
+      iex> ZenEx.Model.User.add_tags(id, ["tag 1", "tag 2"])
+      {:ok, %{tags: ["tag 1", "tag 2"]}}
+
+  """
+  @spec add_tags(%User{}, list(String.t())) :: {:ok, map()} | {:error, any()}
+  def add_tags(user, tags) do
+    response = HTTPClient.put("/api/v2/users/#{user.id}/tags.json",
+      %{"tags" => tags, "safe_update" => true, "updated_stamp" => user.updated_at})
+
+    case response do
+      {:ok, %{body: body}} -> Poison.decode!(body, keys: :atoms)
+      {:error, error} -> {:error, error}
+    end
+  end
 end
