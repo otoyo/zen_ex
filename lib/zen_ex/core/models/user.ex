@@ -214,7 +214,7 @@ defmodule ZenEx.Model.User do
       %{"tags" => tags, "safe_update" => true, "updated_stamp" => user.updated_at})
 
     case response do
-      {:ok, %{body: body}} -> Poison.decode!(body, keys: :atoms)
+      {:ok, %{body: body}} -> Poison.decode(body, keys: :atoms) 
       {:error, error} -> {:error, error}
     end
   end
