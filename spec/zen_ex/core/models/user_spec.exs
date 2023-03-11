@@ -32,6 +32,12 @@ defmodule ZenEx.Model.UserSpec do
     ~s({"count":2,"users":[{"id":223443,"name":"Johnny Agent"},{"id":8678530,"name":"James A. Rosen"}]})
   end
 
+  let :json_search_external_id_users do
+    ~s({"count":1,"users":[{"id":223443,"name":"Johnny Agent","external_id":1234567}]})
+  end
+
+  let(:json_tags, do: ~s({"tags":["tag 1","tag 2"]}))
+  
   let(:json_error, do: ~s({"error":"RecordNotFound","description":"Not found"}))
 
   describe "list" do
@@ -308,6 +314,43 @@ defmodule ZenEx.Model.UserSpec do
       context "when argument is a string" do
         it(do: expect({:ok, %ZenEx.Collection{}} = Model.User.search("my_string")))
       end
+    end
+
+    context "response status: 200 and external_id" do
+      before(
+        do:
+          mock(fn %{method: :get, url: _} ->
+            {:ok, %Tesla.Env{status: 200, body: json_search_external_id_users()}}
+          end)
+      )
+
+      context "when argument is a map" do
+        it(
+          do:
+            expect(
+              {:ok, %ZenEx.Collection{count: 1, entities: [%{external_id: 1234567}]}} = Model.User.search(%{external_id: 1234567})
+            )
+        )
+      end
+    end
+  end
+
+  describe "add_tags" do
+    context "response status: 200" do
+      before(
+        do:
+          mock(fn %{method: :put, url: _} -> {:ok, %Tesla.Env{status: 200, body: json_tags()}} end)
+      )
+
+      it(do: expect({:ok, %{tags: ["tag 1", "tag 2"]}} = Model.User.add_tags(user(), ["tag 1", "tag 2"])))
+    end
+
+    context "response status: 500" do
+      before(
+        do: mock(fn %{method: :put, url: _} -> {:error, %Tesla.Env{status: 500, body: ""}} end)
+      )
+
+      it(do: expect({:error, _} = Model.User.add_tags(user(), nil)))
     end
   end
 end

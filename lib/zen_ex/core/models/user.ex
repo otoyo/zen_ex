@@ -186,7 +186,36 @@ defmodule ZenEx.Model.User do
 
   @spec search(String.t()) :: {:ok, %ZenEx.Collection{}} | {:error, any()}
   def search(query) do
-    "/api/v2/users/search.json?query=#{query}"
+    base_url = "/api/v2/users/search.json?"
+
+    # external_id queries are special case where we expect an exact match
+    # no other query criteria should be present
+    cond do
+      String.starts_with?(query, "external_id") -> "#{base_url}external_id=#{query |> String.split(":") |> List.last()}"
+      true -> "#{base_url}query=#{query}"
+    end
     |> HTTPClient.get(users: [User])
+  end
+
+  @doc """
+  Add tags for a user.
+
+  Only additive. Won't overwrite existing tags.
+
+  ## Examples
+
+      iex> ZenEx.Model.User.add_tags(id, ["tag 1", "tag 2"])
+      {:ok, %{tags: ["tag 1", "tag 2"]}}
+
+  """
+  @spec add_tags(%User{}, list(String.t())) :: {:ok, map()} | {:error, any()}
+  def add_tags(user, tags) do
+    response = HTTPClient.put("/api/v2/users/#{user.id}/tags.json",
+      %{"tags" => tags, "safe_update" => true, "updated_stamp" => user.updated_at})
+
+    case response do
+      {:ok, %{body: body}} -> Poison.decode(body, keys: :atoms) 
+      {:error, error} -> {:error, error}
+    end
   end
 end
